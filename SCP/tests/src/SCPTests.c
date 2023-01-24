@@ -20,11 +20,14 @@ static void SCPTests_testQueue(void)
     SCPContainer* q1 = SCPQueue_create(3,2);
     assert(q1 != NULL);
     assert(SCPQueue_isEmpty(q1) == 1);
-    SCPContainer* q2 = SCPQueue_create(100,9);
+    SCPContainer* q2 = SCPQueue_create(3,2);
     assert(q2 != NULL);
+    assert(SCPQueue_isEmpty(q2) == 1);
+    SCPContainer* q3 = SCPQueue_create(100,8);
+    assert(q3 != NULL);
     /* Assuming the size of the buffer is 1000B, this next queue creation is expected to fail due to lack of space. */
-    SCPContainer* q3 = SCPQueue_create(5,10);
-    assert(q3 == NULL);
+    SCPContainer* q4 = SCPQueue_create(10,10);
+    assert(q4 == NULL);
 
     uint16_t q1val1 = 1234, q1val2 = 4321, q1val3 = 9876, q1val4 = 4567;
     SCPStatus status;

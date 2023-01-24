@@ -5,18 +5,23 @@
 
 
 #define QUEUE_FULL_MARKER (1u)
+#define QUEUE_TYPE_MARKER (0x12 << 1)
 
-#define IS_QUEUE_FULL(queue)        ((queue->meta & QUEUE_FULL_MARKER) ? SCPBool_true : SCPBool_false)
-#define IS_QUEUE_EMPTY(queue)       (((queue->c.q.head == queue->c.q.tail) && !IS_QUEUE_FULL(q)) ? SCPBool_true : SCPBool_false)
-#define SET_QUEUE_FULL(queue)       (queue->meta |= QUEUE_FULL_MARKER)
-#define CLEAR_QUEUE_FULL(queue)     (queue->meta &= ~QUEUE_FULL_MARKER)
-#define END_OF_QUEUE_DATA(queue)    (SCPAddr)((SCPAddr)queue + sizeof(SCPContainer) + (queue->c.q.maxNoOfElem * queue->c.q.sizeOfElem))
-#define START_OF_QUEUE_DATA(queue)  (SCPAddr)((SCPAddr)queue + sizeof(SCPContainer))
-#define IS_QUEUE_VALID(queue)       ((  (queue != SCP_NULL) && \
-                                    (queue->c.q.head != SCP_NULL) && \
-                                    (queue->c.q.tail != SCP_NULL) && \
-                                    (queue->c.q.maxNoOfElem > 0) && \
-                                    (queue->c.q.sizeOfElem > 0)) ? SCPBool_true : SCPBool_false)
+#define IS_QUEUE_FULL(queue)        (((queue)->meta & QUEUE_FULL_MARKER) ? SCPBool_true : SCPBool_false)
+#define IS_QUEUE_EMPTY(queue)       ((((queue)->c.q.head == (queue)->c.q.tail) && !IS_QUEUE_FULL(q)) ? SCPBool_true : SCPBool_false)
+#define SET_QUEUE_FULL(queue)       ((queue)->meta |= QUEUE_FULL_MARKER)
+#define CLEAR_QUEUE_FULL(queue)     ((queue)->meta &= ~QUEUE_FULL_MARKER)
+#define END_OF_QUEUE_DATA(queue)    (SCPAddr)((SCPAddr)(queue) + sizeof(SCPContainer) + ((queue)->c.q.maxNoOfElem * (queue)->c.q.sizeOfElem))
+#define START_OF_QUEUE_DATA(queue)  (SCPAddr)((SCPAddr)(queue) + sizeof(SCPContainer))
+#define IS_QUEUE(queue)             (((queue)->meta & QUEUE_TYPE_MARKER) == QUEUE_TYPE_MARKER ? SCPBool_true : SCPBool_false)
+#define SET_QUEUE_TYPE_MARKER(queue)    ((queue)->meta |= QUEUE_TYPE_MARKER)
+#define IS_QUEUE_VALID(queue)       (((queue != SCP_NULL) && IS_QUEUE(queue) && \
+                                    ((queue)->c.q.head != SCP_NULL) && \
+                                    ((queue)->c.q.tail != SCP_NULL) && \
+                                    ((queue)->c.q.maxNoOfElem > 0) && \
+                                    ((queue)->c.q.sizeOfElem > 0)) ? SCPBool_true : SCPBool_false)
+
+
 
 static void createEmptyQueue(SCPContainer** newQueue, const SCPUWord elem, const SCPUWord size);
 
@@ -121,5 +126,6 @@ static void createEmptyQueue(SCPContainer** newQueue, const SCPUWord elem, const
     (*newQueue)->c.q.sizeOfElem = size;
     (*newQueue)->c.q.head = (SCPAddr)*newQueue + sizeof(SCPContainer);
     (*newQueue)->c.q.tail = (*newQueue)->c.q.head;
+    SET_QUEUE_TYPE_MARKER(*newQueue);
     scp.nextFree = (SCPContainer*)END_OF_QUEUE_DATA(scp.nextFree);
 }
