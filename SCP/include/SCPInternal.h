@@ -2,8 +2,8 @@
 #include "SCPTypes.h"
 
 typedef struct {
+    SCPContainer* nextFree;
     SCPUByte buffer[SCP_TOTAL_BUFFER_SIZE];
-    SCPAddr nextFree;
 }SCPInternalType;
 
 extern SCPInternalType scp;

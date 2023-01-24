@@ -9,7 +9,7 @@ This graph shows which files directly or indirectly include this file\+:\nopageb
 \begin{figure}[H]
 \begin{center}
 \leavevmode
-\includegraphics[width=141pt]{SCPCfg_8h__dep__incl}
+\includegraphics[width=220pt]{SCPCfg_8h__dep__incl}
 \end{center}
 \end{figure}
 \doxysubsection*{Macros}
@@ -17,7 +17,16 @@ This graph shows which files directly or indirectly include this file\+:\nopageb
 \item 
 \mbox{\Hypertarget{SCPCfg_8h_a517e84ce6cd50409e5b2aa9ce4bfe19b}\label{SCPCfg_8h_a517e84ce6cd50409e5b2aa9ce4bfe19b}} 
 \#define \mbox{\hyperlink{SCPCfg_8h_a517e84ce6cd50409e5b2aa9ce4bfe19b}{SCP\+\_\+\+TOTAL\+\_\+\+BUFFER\+\_\+\+SIZE}}~1000u
-\begin{DoxyCompactList}\small\item\em The total size of the static pool used to create containers. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\begin{DoxyCompactList}\small\item\em The total size of the static pool used to create containers. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{SCPCfg_8h_a610c7569e4985578a02c40fd12adac59}\label{SCPCfg_8h_a610c7569e4985578a02c40fd12adac59}} 
+\#define \mbox{\hyperlink{SCPCfg_8h_a610c7569e4985578a02c40fd12adac59}{SCP\+\_\+\+ENTER\+\_\+\+CRITICAL\+\_\+\+SECTION}}()
+\begin{DoxyCompactList}\small\item\em Macro for entering a critical section. This should prevent the current task from being preempted while executing in a critical section. To be defined by user. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{SCPCfg_8h_a5c12a814fa03afbae6b5e62bfa9a7024}\label{SCPCfg_8h_a5c12a814fa03afbae6b5e62bfa9a7024}} 
+\#define \mbox{\hyperlink{SCPCfg_8h_a5c12a814fa03afbae6b5e62bfa9a7024}{SCP\+\_\+\+EXIT\+\_\+\+CRITICAL\+\_\+\+SECTION}}()
+\begin{DoxyCompactList}\small\item\em Macro for exiting from a critical section. To be defined by user. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{SCPCfg_8h_a6ef6db48f8db0e88b6e35ba982244460}\label{SCPCfg_8h_a6ef6db48f8db0e88b6e35ba982244460}} 
+\#define \mbox{\hyperlink{SCPCfg_8h_a6ef6db48f8db0e88b6e35ba982244460}{SCP\+\_\+\+ENABLE\+\_\+\+API\+\_\+\+QUEUE}}~1
+\begin{DoxyCompactList}\small\item\em Macro to enable or disable queue handling. If queues are not needed, set this to 0. \end{DoxyCompactList}\end{DoxyCompactItemize}
 
 
 \doxysubsection{Detailed Description}

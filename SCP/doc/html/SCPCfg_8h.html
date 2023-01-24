@@ -81,8 +81,10 @@ This graph shows which files directly or indirectly include this file:</div>
 <div class="dyncontent">
 <div class="center"><img src="SCPCfg_8h__dep__incl.png" border="0" usemap="#aSCPCfg_8hdep" alt=""/></div>
 <map name="aSCPCfg_8hdep" id="aSCPCfg_8hdep">
-<area shape="rect" title="User configuration." alt="" coords="5,5,87,32"/>
-<area shape="rect" href="SCP_8h.html" title="Main include file that provides access to all functionality." alt="" coords="17,80,75,107"/>
+<area shape="rect" title="User configuration." alt="" coords="32,5,113,32"/>
+<area shape="rect" href="SCP_8h.html" title="Main include file that provides access to all functionality." alt="" coords="25,229,82,256"/>
+<area shape="rect" href="SCPTypes_8h.html" title="File containing all types that are needed for SCP." alt="" coords="24,80,120,107"/>
+<area shape="rect" href="SCPQueue_8h.html" title="API for handling queue operations." alt="" coords="91,155,192,181"/>
 </map>
 </div>
 </div>
@@ -94,6 +96,18 @@ Macros</h2></td></tr>
 #define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SCPCfg_8h.html#a517e84ce6cd50409e5b2aa9ce4bfe19b">SCP_TOTAL_BUFFER_SIZE</a>&#160;&#160;&#160;1000u</td></tr>
 <tr class="memdesc:a517e84ce6cd50409e5b2aa9ce4bfe19b"><td class="mdescLeft">&#160;</td><td class="mdescRight">The total size of the static pool used to create containers. <br /></td></tr>
 <tr class="separator:a517e84ce6cd50409e5b2aa9ce4bfe19b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a610c7569e4985578a02c40fd12adac59"><td class="memItemLeft" align="right" valign="top"><a id="a610c7569e4985578a02c40fd12adac59"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SCPCfg_8h.html#a610c7569e4985578a02c40fd12adac59">SCP_ENTER_CRITICAL_SECTION</a>()</td></tr>
+<tr class="memdesc:a610c7569e4985578a02c40fd12adac59"><td class="mdescLeft">&#160;</td><td class="mdescRight">Macro for entering a critical section. This should prevent the current task from being preempted while executing in a critical section. To be defined by user. <br /></td></tr>
+<tr class="separator:a610c7569e4985578a02c40fd12adac59"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5c12a814fa03afbae6b5e62bfa9a7024"><td class="memItemLeft" align="right" valign="top"><a id="a5c12a814fa03afbae6b5e62bfa9a7024"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SCPCfg_8h.html#a5c12a814fa03afbae6b5e62bfa9a7024">SCP_EXIT_CRITICAL_SECTION</a>()</td></tr>
+<tr class="memdesc:a5c12a814fa03afbae6b5e62bfa9a7024"><td class="mdescLeft">&#160;</td><td class="mdescRight">Macro for exiting from a critical section. To be defined by user. <br /></td></tr>
+<tr class="separator:a5c12a814fa03afbae6b5e62bfa9a7024"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6ef6db48f8db0e88b6e35ba982244460"><td class="memItemLeft" align="right" valign="top"><a id="a6ef6db48f8db0e88b6e35ba982244460"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SCPCfg_8h.html#a6ef6db48f8db0e88b6e35ba982244460">SCP_ENABLE_API_QUEUE</a>&#160;&#160;&#160;1</td></tr>
+<tr class="memdesc:a6ef6db48f8db0e88b6e35ba982244460"><td class="mdescLeft">&#160;</td><td class="mdescRight">Macro to enable or disable queue handling. If queues are not needed, set this to 0. <br /></td></tr>
+<tr class="separator:a6ef6db48f8db0e88b6e35ba982244460"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>User configuration. </p>

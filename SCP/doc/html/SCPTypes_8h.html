@@ -69,7 +69,9 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#nested-classes">Data Structures</a> &#124;
-<a href="#typedef-members">Typedefs</a>  </div>
+<a href="#define-members">Macros</a> &#124;
+<a href="#typedef-members">Typedefs</a> &#124;
+<a href="#enum-members">Enumerations</a>  </div>
   <div class="headertitle">
 <div class="title">SCPTypes.h File Reference</div>  </div>
 </div><!--header-->
@@ -77,7 +79,27 @@ $(function() {
 
 <p>File containing all types that are needed for SCP.  
 <a href="#details">More...</a></p>
-
+<div class="textblock"><code>#include &quot;<a class="el" href="SCPCfg_8h_source.html">SCPCfg.h</a>&quot;</code><br />
+</div><div class="textblock"><div class="dynheader">
+Include dependency graph for SCPTypes.h:</div>
+<div class="dyncontent">
+<div class="center"><img src="SCPTypes_8h__incl.png" border="0" usemap="#aSCPTypes_8h" alt=""/></div>
+<map name="aSCPTypes_8h" id="aSCPTypes_8h">
+<area shape="rect" title="File containing all types that are needed for SCP." alt="" coords="5,5,101,32"/>
+<area shape="rect" href="SCPCfg_8h.html" title="User configuration." alt="" coords="13,80,94,107"/>
+</map>
+</div>
+</div><div class="textblock"><div class="dynheader">
+This graph shows which files directly or indirectly include this file:</div>
+<div class="dyncontent">
+<div class="center"><img src="SCPTypes_8h__dep__incl.png" border="0" usemap="#aSCPTypes_8hdep" alt=""/></div>
+<map name="aSCPTypes_8hdep" id="aSCPTypes_8hdep">
+<area shape="rect" title="File containing all types that are needed for SCP." alt="" coords="5,5,101,32"/>
+<area shape="rect" href="SCP_8h.html" title="Main include file that provides access to all functionality." alt="" coords="25,155,82,181"/>
+<area shape="rect" href="SCPQueue_8h.html" title="API for handling queue operations." alt="" coords="47,80,148,107"/>
+</map>
+</div>
+</div>
 <p><a href="SCPTypes_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
@@ -85,6 +107,15 @@ Data Structures</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSCPQueue.html">SCPQueue</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type that describes a queue. Only for internal use.  <a href="structSCPQueue.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSCPContainer.html">SCPContainer</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type that describes a general container. Only for internal use.  <a href="structSCPContainer.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
+Macros</h2></td></tr>
+<tr class="memitem:a16779456e16f03322466abd5304303b4"><td class="memItemLeft" align="right" valign="top"><a id="a16779456e16f03322466abd5304303b4"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>SCP_NULL</b>&#160;&#160;&#160;0</td></tr>
+<tr class="separator:a16779456e16f03322466abd5304303b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
 Typedefs</h2></td></tr>
@@ -94,6 +125,19 @@ Typedefs</h2></td></tr>
 <tr class="separator:ab97001cb6ab60a3210ce8a84e5951d92"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7cee91eb54d69746afbe974f2190a075"><td class="memItemLeft" align="right" valign="top">typedef unsigned char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SCPTypes_8h.html#a7cee91eb54d69746afbe974f2190a075">SCPAddr</a></td></tr>
 <tr class="separator:a7cee91eb54d69746afbe974f2190a075"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
+Enumerations</h2></td></tr>
+<tr class="memitem:a1fac12b6ac907965f4248b5d82a328cf"><td class="memItemLeft" align="right" valign="top"><a id="a1fac12b6ac907965f4248b5d82a328cf"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SCPTypes_8h.html#a1fac12b6ac907965f4248b5d82a328cf">SCPBool</a> { <b>SCPBool_false</b>
+, <b>SCPBool_true</b>
+ }</td></tr>
+<tr class="memdesc:a1fac12b6ac907965f4248b5d82a328cf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type used to represent boolean values. <br /></td></tr>
+<tr class="separator:a1fac12b6ac907965f4248b5d82a328cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6e385d0b7e91765667a83da82085aeb5"><td class="memItemLeft" align="right" valign="top"><a id="a6e385d0b7e91765667a83da82085aeb5"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SCPTypes_8h.html#a6e385d0b7e91765667a83da82085aeb5">SCPStatus</a> { <b>SCPStatus_failed</b>
+, <b>SCPStatus_success</b>
+ }</td></tr>
+<tr class="memdesc:a6e385d0b7e91765667a83da82085aeb5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type used to represent the status of an operation. <br /></td></tr>
+<tr class="separator:a6e385d0b7e91765667a83da82085aeb5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>File containing all types that are needed for SCP. </p>
@@ -128,7 +172,7 @@ Typedefs</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Type for one byte. </p>
+<p>Type for one unsigned byte. </p>
 
 </div>
 </div>
@@ -143,7 +187,7 @@ Typedefs</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Type for one word. At least 4 bytes. </p>
+<p>Type for one unsigned word. At least 4 bytes. </p>
 
 </div>
 </div>

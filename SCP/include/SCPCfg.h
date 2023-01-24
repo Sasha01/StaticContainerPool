@@ -25,4 +25,22 @@
 */
 #define SCP_TOTAL_BUFFER_SIZE 1000u
 
+/**
+ * @brief Macro for entering a critical section. This should prevent the current task from being preempted while executing in a critical section. To be defined by user.
+ * 
+ */
+#define SCP_ENTER_CRITICAL_SECTION()
+
+/**
+ * @brief Macro for exiting from a critical section. To be defined by user.
+ * 
+ */
+#define SCP_EXIT_CRITICAL_SECTION()
+
+/**
+ * @brief Macro to enable or disable queue handling. If queues are not needed, set this to 0.
+ * 
+ */
+#define SCP_ENABLE_API_QUEUE 1
+
 #endif /* SCPCFG_H */

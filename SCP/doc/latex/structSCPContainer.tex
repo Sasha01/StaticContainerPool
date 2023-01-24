@@ -1,0 +1,61 @@
+\hypertarget{structSCPContainer}{}\doxysection{SCPContainer Struct Reference}
+\label{structSCPContainer}\index{SCPContainer@{SCPContainer}}
+
+
+Type that describes a general container. Only for internal use.  
+
+
+
+
+{\ttfamily \#include $<$SCPTypes.\+h$>$}
+
+
+
+Collaboration diagram for SCPContainer\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=163pt]{structSCPContainer__coll__graph}
+\end{center}
+\end{figure}
+\doxysubsection*{Data Fields}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{SCPTypes_8h_ab97001cb6ab60a3210ce8a84e5951d92}{SCPUWord}} \mbox{\hyperlink{structSCPContainer_a0a59a86cf6779649a4d5477ee88eec05}{meta}}
+\item 
+\begin{tabbing}
+xx\=xx\=xx\=xx\=xx\=xx\=xx\=xx\=xx\=\kill
+union \{\\
+\>\mbox{\hyperlink{structSCPQueue}{SCPQueue}} \mbox{\hyperlink{structSCPContainer_aa4683466248d9ecce9b341676e7471cf}{q}}\\
+\} \mbox{\hyperlink{structSCPContainer_af3241d9827272e4959b1b6ed97103d6d}{c}}\\
+
+\end{tabbing}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Type that describes a general container. Only for internal use. 
+
+\doxysubsection{Field Documentation}
+\mbox{\Hypertarget{structSCPContainer_af3241d9827272e4959b1b6ed97103d6d}\label{structSCPContainer_af3241d9827272e4959b1b6ed97103d6d}} 
+\index{SCPContainer@{SCPContainer}!c@{c}}
+\index{c@{c}!SCPContainer@{SCPContainer}}
+\doxysubsubsection{\texorpdfstring{}{}}
+{\footnotesize\ttfamily union \{ ... \}  SCPContainer\+::c}
+
+Representation of the container. \mbox{\Hypertarget{structSCPContainer_a0a59a86cf6779649a4d5477ee88eec05}\label{structSCPContainer_a0a59a86cf6779649a4d5477ee88eec05}} 
+\index{SCPContainer@{SCPContainer}!meta@{meta}}
+\index{meta@{meta}!SCPContainer@{SCPContainer}}
+\doxysubsubsection{\texorpdfstring{meta}{meta}}
+{\footnotesize\ttfamily \mbox{\hyperlink{SCPTypes_8h_ab97001cb6ab60a3210ce8a84e5951d92}{SCPUWord}} SCPContainer\+::meta}
+
+Meta information. Reserved for future use. \mbox{\Hypertarget{structSCPContainer_aa4683466248d9ecce9b341676e7471cf}\label{structSCPContainer_aa4683466248d9ecce9b341676e7471cf}} 
+\index{SCPContainer@{SCPContainer}!q@{q}}
+\index{q@{q}!SCPContainer@{SCPContainer}}
+\doxysubsubsection{\texorpdfstring{q}{q}}
+{\footnotesize\ttfamily \mbox{\hyperlink{structSCPQueue}{SCPQueue}} SCPContainer\+::q}
+
+Representation of the queue. 
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{SCPTypes_8h}{SCPTypes.\+h}}\end{DoxyCompactItemize}

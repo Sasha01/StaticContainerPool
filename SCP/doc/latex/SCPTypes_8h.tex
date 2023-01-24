@@ -5,11 +5,34 @@
 File containing all types that are needed for SCP.  
 
 
+{\ttfamily \#include \char`\"{}SCPCfg.\+h\char`\"{}}\newline
+Include dependency graph for SCPTypes.\+h\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=152pt]{SCPTypes_8h__incl}
+\end{center}
+\end{figure}
+This graph shows which files directly or indirectly include this file\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=187pt]{SCPTypes_8h__dep__incl}
+\end{center}
+\end{figure}
 \doxysubsection*{Data Structures}
 \begin{DoxyCompactItemize}
 \item 
 struct \mbox{\hyperlink{structSCPQueue}{SCPQueue}}
-\begin{DoxyCompactList}\small\item\em Type that describes a queue. Only for internal use. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\begin{DoxyCompactList}\small\item\em Type that describes a queue. Only for internal use. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structSCPContainer}{SCPContainer}}
+\begin{DoxyCompactList}\small\item\em Type that describes a general container. Only for internal use. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{SCPTypes_8h_a16779456e16f03322466abd5304303b4}\label{SCPTypes_8h_a16779456e16f03322466abd5304303b4}} 
+\#define {\bfseries SCP\+\_\+\+NULL}~0
+\end{DoxyCompactItemize}
 \doxysubsection*{Typedefs}
 \begin{DoxyCompactItemize}
 \item 
@@ -19,6 +42,19 @@ typedef unsigned int \mbox{\hyperlink{SCPTypes_8h_ab97001cb6ab60a3210ce8a84e5951
 \item 
 typedef unsigned char $\ast$ \mbox{\hyperlink{SCPTypes_8h_a7cee91eb54d69746afbe974f2190a075}{SCPAddr}}
 \end{DoxyCompactItemize}
+\doxysubsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{SCPTypes_8h_a1fac12b6ac907965f4248b5d82a328cf}\label{SCPTypes_8h_a1fac12b6ac907965f4248b5d82a328cf}} 
+enum \mbox{\hyperlink{SCPTypes_8h_a1fac12b6ac907965f4248b5d82a328cf}{SCPBool}} \{ {\bfseries SCPBool\+\_\+false}
+, {\bfseries SCPBool\+\_\+true}
+ \}
+\begin{DoxyCompactList}\small\item\em Type used to represent boolean values. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{SCPTypes_8h_a6e385d0b7e91765667a83da82085aeb5}\label{SCPTypes_8h_a6e385d0b7e91765667a83da82085aeb5}} 
+enum \mbox{\hyperlink{SCPTypes_8h_a6e385d0b7e91765667a83da82085aeb5}{SCPStatus}} \{ {\bfseries SCPStatus\+\_\+failed}
+, {\bfseries SCPStatus\+\_\+success}
+ \}
+\begin{DoxyCompactList}\small\item\em Type used to represent the status of an operation. \end{DoxyCompactList}\end{DoxyCompactItemize}
 
 
 \doxysubsection{Detailed Description}
@@ -51,10 +87,10 @@ Type for addresses. \mbox{\Hypertarget{SCPTypes_8h_a8376c5829fcaeeefc03720dd9e1d
 \doxysubsubsection{\texorpdfstring{SCPUByte}{SCPUByte}}
 {\footnotesize\ttfamily typedef unsigned char \mbox{\hyperlink{SCPTypes_8h_a8376c5829fcaeeefc03720dd9e1d7b0a}{SCPUByte}}}
 
-Type for one byte. \mbox{\Hypertarget{SCPTypes_8h_ab97001cb6ab60a3210ce8a84e5951d92}\label{SCPTypes_8h_ab97001cb6ab60a3210ce8a84e5951d92}} 
+Type for one unsigned byte. \mbox{\Hypertarget{SCPTypes_8h_ab97001cb6ab60a3210ce8a84e5951d92}\label{SCPTypes_8h_ab97001cb6ab60a3210ce8a84e5951d92}} 
 \index{SCPTypes.h@{SCPTypes.h}!SCPUWord@{SCPUWord}}
 \index{SCPUWord@{SCPUWord}!SCPTypes.h@{SCPTypes.h}}
 \doxysubsubsection{\texorpdfstring{SCPUWord}{SCPUWord}}
 {\footnotesize\ttfamily typedef unsigned int \mbox{\hyperlink{SCPTypes_8h_ab97001cb6ab60a3210ce8a84e5951d92}{SCPUWord}}}
 
-Type for one word. At least 4 bytes. 
+Type for one unsigned word. At least 4 bytes. 

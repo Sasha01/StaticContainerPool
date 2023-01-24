@@ -1,0 +1,172 @@
+\hypertarget{SCPQueue_8h}{}\doxysection{SCPQueue.\+h File Reference}
+\label{SCPQueue_8h}\index{SCPQueue.h@{SCPQueue.h}}
+
+
+API for handling queue operations.  
+
+
+{\ttfamily \#include \char`\"{}SCPCfg.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}SCPTypes.\+h\char`\"{}}\newline
+Include dependency graph for SCPQueue.\+h\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=186pt]{SCPQueue_8h__incl}
+\end{center}
+\end{figure}
+This graph shows which files directly or indirectly include this file\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=156pt]{SCPQueue_8h__dep__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{structSCPContainer}{SCPContainer}} $\ast$ \mbox{\hyperlink{SCPQueue_8h_ad133550cfdcbb8235ca71f1cfa793537}{SCPQueue\+\_\+create}} (const \mbox{\hyperlink{SCPTypes_8h_ab97001cb6ab60a3210ce8a84e5951d92}{SCPUWord}} no\+Of\+Elem, const \mbox{\hyperlink{SCPTypes_8h_ab97001cb6ab60a3210ce8a84e5951d92}{SCPUWord}} size\+Of\+Elem)
+\begin{DoxyCompactList}\small\item\em Creates a queue from the static pool. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{SCPTypes_8h_a6e385d0b7e91765667a83da82085aeb5}{SCPStatus}} \mbox{\hyperlink{SCPQueue_8h_ab2e5192129c164704c90cde5b0121826}{SCPQueue\+\_\+push}} (\mbox{\hyperlink{structSCPContainer}{SCPContainer}} $\ast$const q, \mbox{\hyperlink{SCPTypes_8h_a7cee91eb54d69746afbe974f2190a075}{SCPAddr}} data)
+\begin{DoxyCompactList}\small\item\em Pushes one element in the queue. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{SCPTypes_8h_a6e385d0b7e91765667a83da82085aeb5}{SCPStatus}} \mbox{\hyperlink{SCPQueue_8h_a0791a049a7880513468f0ec704a59494}{SCPQueue\+\_\+pop}} (\mbox{\hyperlink{structSCPContainer}{SCPContainer}} $\ast$const q, \mbox{\hyperlink{SCPTypes_8h_a7cee91eb54d69746afbe974f2190a075}{SCPAddr}} data)
+\begin{DoxyCompactList}\small\item\em Extracts one element from the queue. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{SCPTypes_8h_a1fac12b6ac907965f4248b5d82a328cf}{SCPBool}} \mbox{\hyperlink{SCPQueue_8h_a6085aabddeb8c17a4dce749d02f295d5}{SCPQueue\+\_\+is\+Empty}} (\mbox{\hyperlink{structSCPContainer}{SCPContainer}} $\ast$const q)
+\begin{DoxyCompactList}\small\item\em Check if the queue is empty. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{SCPTypes_8h_a1fac12b6ac907965f4248b5d82a328cf}{SCPBool}} \mbox{\hyperlink{SCPQueue_8h_abe69a6c1f3148c99dc995aeefff2ac9d}{SCPQueue\+\_\+is\+Full}} (\mbox{\hyperlink{structSCPContainer}{SCPContainer}} $\ast$const q)
+\begin{DoxyCompactList}\small\item\em Checks if the queue is full. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{SCPTypes_8h_ab97001cb6ab60a3210ce8a84e5951d92}{SCPUWord}} \mbox{\hyperlink{SCPQueue_8h_a8a8b4708e4e543f80c10ea6b8296d35f}{SCPQueue\+\_\+get\+Count}} (const \mbox{\hyperlink{structSCPContainer}{SCPContainer}} $\ast$const q)
+\begin{DoxyCompactList}\small\item\em Gets the number of elements that are currently in the queue. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+API for handling queue operations. 
+
+\begin{DoxyAuthor}{Author}
+Sorin Bugarin (\href{mailto:sorin.bugarin@gmail.com}{\texttt{ sorin.\+bugarin@gmail.\+com}}) 
+\end{DoxyAuthor}
+\begin{DoxyVersion}{Version}
+0.\+0.\+1 
+\end{DoxyVersion}
+\begin{DoxyDate}{Date}
+2023-\/01-\/24
+\end{DoxyDate}
+\begin{DoxyCopyright}{Copyright}
+Copyright (c) 2023 
+\end{DoxyCopyright}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{SCPQueue_8h_ad133550cfdcbb8235ca71f1cfa793537}\label{SCPQueue_8h_ad133550cfdcbb8235ca71f1cfa793537}} 
+\index{SCPQueue.h@{SCPQueue.h}!SCPQueue\_create@{SCPQueue\_create}}
+\index{SCPQueue\_create@{SCPQueue\_create}!SCPQueue.h@{SCPQueue.h}}
+\doxysubsubsection{\texorpdfstring{SCPQueue\_create()}{SCPQueue\_create()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{structSCPContainer}{SCPContainer}}$\ast$ SCPQueue\+\_\+create (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{SCPTypes_8h_ab97001cb6ab60a3210ce8a84e5951d92}{SCPUWord}}}]{no\+Of\+Elem,  }\item[{const \mbox{\hyperlink{SCPTypes_8h_ab97001cb6ab60a3210ce8a84e5951d92}{SCPUWord}}}]{size\+Of\+Elem }\end{DoxyParamCaption})}
+
+
+
+Creates a queue from the static pool. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em no\+Of\+Elem} & -\/ Maximum number of elements that the queue must accomodate. \\
+\hline
+{\em size\+Of\+Elem} & -\/ Size of one element in bytes. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+SCPContainer$\ast$ -\/ NULL if failed, non-\/\+NULL if successful. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{SCPQueue_8h_a8a8b4708e4e543f80c10ea6b8296d35f}\label{SCPQueue_8h_a8a8b4708e4e543f80c10ea6b8296d35f}} 
+\index{SCPQueue.h@{SCPQueue.h}!SCPQueue\_getCount@{SCPQueue\_getCount}}
+\index{SCPQueue\_getCount@{SCPQueue\_getCount}!SCPQueue.h@{SCPQueue.h}}
+\doxysubsubsection{\texorpdfstring{SCPQueue\_getCount()}{SCPQueue\_getCount()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{SCPTypes_8h_ab97001cb6ab60a3210ce8a84e5951d92}{SCPUWord}} SCPQueue\+\_\+get\+Count (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structSCPContainer}{SCPContainer}} $\ast$const}]{q }\end{DoxyParamCaption})}
+
+
+
+Gets the number of elements that are currently in the queue. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em q} & -\/ reference to the queue. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+SCPUWord -\/ number of elements currently in the queue. If the queue is not valid, returns 0. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{SCPQueue_8h_a6085aabddeb8c17a4dce749d02f295d5}\label{SCPQueue_8h_a6085aabddeb8c17a4dce749d02f295d5}} 
+\index{SCPQueue.h@{SCPQueue.h}!SCPQueue\_isEmpty@{SCPQueue\_isEmpty}}
+\index{SCPQueue\_isEmpty@{SCPQueue\_isEmpty}!SCPQueue.h@{SCPQueue.h}}
+\doxysubsubsection{\texorpdfstring{SCPQueue\_isEmpty()}{SCPQueue\_isEmpty()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{SCPTypes_8h_a1fac12b6ac907965f4248b5d82a328cf}{SCPBool}} SCPQueue\+\_\+is\+Empty (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structSCPContainer}{SCPContainer}} $\ast$const}]{q }\end{DoxyParamCaption})}
+
+
+
+Check if the queue is empty. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em q} & -\/ reference to the queue. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+SCPBool -\/ true = the queue is empty, false = the queue is not empty. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{SCPQueue_8h_abe69a6c1f3148c99dc995aeefff2ac9d}\label{SCPQueue_8h_abe69a6c1f3148c99dc995aeefff2ac9d}} 
+\index{SCPQueue.h@{SCPQueue.h}!SCPQueue\_isFull@{SCPQueue\_isFull}}
+\index{SCPQueue\_isFull@{SCPQueue\_isFull}!SCPQueue.h@{SCPQueue.h}}
+\doxysubsubsection{\texorpdfstring{SCPQueue\_isFull()}{SCPQueue\_isFull()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{SCPTypes_8h_a1fac12b6ac907965f4248b5d82a328cf}{SCPBool}} SCPQueue\+\_\+is\+Full (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structSCPContainer}{SCPContainer}} $\ast$const}]{q }\end{DoxyParamCaption})}
+
+
+
+Checks if the queue is full. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em q} & -\/ reference to the queue. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+SCPBool -\/ true = the queue is full, false = the queue is not full. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{SCPQueue_8h_a0791a049a7880513468f0ec704a59494}\label{SCPQueue_8h_a0791a049a7880513468f0ec704a59494}} 
+\index{SCPQueue.h@{SCPQueue.h}!SCPQueue\_pop@{SCPQueue\_pop}}
+\index{SCPQueue\_pop@{SCPQueue\_pop}!SCPQueue.h@{SCPQueue.h}}
+\doxysubsubsection{\texorpdfstring{SCPQueue\_pop()}{SCPQueue\_pop()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{SCPTypes_8h_a6e385d0b7e91765667a83da82085aeb5}{SCPStatus}} SCPQueue\+\_\+pop (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structSCPContainer}{SCPContainer}} $\ast$const}]{q,  }\item[{\mbox{\hyperlink{SCPTypes_8h_a7cee91eb54d69746afbe974f2190a075}{SCPAddr}}}]{data }\end{DoxyParamCaption})}
+
+
+
+Extracts one element from the queue. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em q} & -\/ reference to the queue. \\
+\hline
+{\em data} & -\/ pointer to where the data from the extracted element will be copied. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+SCPStatus -\/ success/failed 
+\end{DoxyReturn}
+\mbox{\Hypertarget{SCPQueue_8h_ab2e5192129c164704c90cde5b0121826}\label{SCPQueue_8h_ab2e5192129c164704c90cde5b0121826}} 
+\index{SCPQueue.h@{SCPQueue.h}!SCPQueue\_push@{SCPQueue\_push}}
+\index{SCPQueue\_push@{SCPQueue\_push}!SCPQueue.h@{SCPQueue.h}}
+\doxysubsubsection{\texorpdfstring{SCPQueue\_push()}{SCPQueue\_push()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{SCPTypes_8h_a6e385d0b7e91765667a83da82085aeb5}{SCPStatus}} SCPQueue\+\_\+push (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structSCPContainer}{SCPContainer}} $\ast$const}]{q,  }\item[{\mbox{\hyperlink{SCPTypes_8h_a7cee91eb54d69746afbe974f2190a075}{SCPAddr}}}]{data }\end{DoxyParamCaption})}
+
+
+
+Pushes one element in the queue. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em q} & -\/ reference to the queue. \\
+\hline
+{\em data} & -\/ element to be pushed. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+SCPStatus -\/ success/failed 
+\end{DoxyReturn}
