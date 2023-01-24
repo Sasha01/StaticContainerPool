@@ -18,7 +18,7 @@
                                     (queue->c.q.maxNoOfElem > 0) && \
                                     (queue->c.q.sizeOfElem > 0)) ? SCPBool_true : SCPBool_false)
 
-static SCPContainer* createEmptyQueue(const SCPUWord elem, const SCPUWord size);
+static void createEmptyQueue(SCPContainer** newQueue, const SCPUWord elem, const SCPUWord size);
 
 SCPContainer* SCPQueue_create(const SCPUWord noOfElem, const SCPUWord sizeOfElem)
 {
@@ -36,7 +36,7 @@ SCPContainer* SCPQueue_create(const SCPUWord noOfElem, const SCPUWord sizeOfElem
     if (freeSpace >= neededSpace)
     {
         /* there is enough space for the queue, create it */
-        newQueue = createEmptyQueue(noOfElem, sizeOfElem);
+        createEmptyQueue(&newQueue, noOfElem, sizeOfElem);
     }    
 
     SCP_EXIT_CRITICAL_SECTION();
@@ -114,14 +114,12 @@ SCPUWord SCPQueue_getCount(const SCPContainer* const q)
     return noOfElem;
 }
 
-static SCPContainer* createEmptyQueue(const SCPUWord elem, const SCPUWord size)
+static void createEmptyQueue(SCPContainer** newQueue, const SCPUWord elem, const SCPUWord size)
 {
-    SCPContainer* newQueue;
-    newQueue = scp.nextFree;
-    newQueue->c.q.maxNoOfElem = elem;
-    newQueue->c.q.sizeOfElem = size;
-    newQueue->c.q.head = (SCPAddr)newQueue + sizeof(SCPContainer);
-    newQueue->c.q.tail = newQueue->c.q.head;
+    (*newQueue) = scp.nextFree;
+    (*newQueue)->c.q.maxNoOfElem = elem;
+    (*newQueue)->c.q.sizeOfElem = size;
+    (*newQueue)->c.q.head = (SCPAddr)*newQueue + sizeof(SCPContainer);
+    (*newQueue)->c.q.tail = (*newQueue)->c.q.head;
     scp.nextFree = (SCPContainer*)END_OF_QUEUE_DATA(scp.nextFree);
-    return newQueue;
 }
