@@ -11,13 +11,20 @@
 #define IS_QUEUE_EMPTY(queue)       ((((queue)->c.q.head == (queue)->c.q.tail) && !IS_QUEUE_FULL(q)) ? SCPBool_true : SCPBool_false)
 #define SET_QUEUE_FULL(queue)       ((queue)->meta |= QUEUE_FULL_MARKER)
 #define CLEAR_QUEUE_FULL(queue)     ((queue)->meta &= ~QUEUE_FULL_MARKER)
-#define END_OF_QUEUE_DATA(queue)    (SCPAddr)((SCPAddr)(queue) + sizeof(SCPContainer) + ((queue)->c.q.maxNoOfElem * (queue)->c.q.sizeOfElem))
+#define END_OF_QUEUE_DATA(queue)    (SCPAddr)(  (SCPAddr)(queue) + sizeof(SCPContainer) + \
+                                                ((queue)->c.q.maxNoOfElem * (queue)->c.q.sizeOfElem))
 #define START_OF_QUEUE_DATA(queue)  (SCPAddr)((SCPAddr)(queue) + sizeof(SCPContainer))
 #define IS_QUEUE(queue)             (((queue)->meta & QUEUE_TYPE_MARKER) == QUEUE_TYPE_MARKER ? SCPBool_true : SCPBool_false)
-#define SET_QUEUE_TYPE_MARKER(queue)    ((queue)->meta |= QUEUE_TYPE_MARKER)
-#define IS_QUEUE_VALID(queue)       (((queue != SCP_NULL) && IS_QUEUE(queue) && \
-                                    ((queue)->c.q.head != SCP_NULL) && \
-                                    ((queue)->c.q.tail != SCP_NULL) && \
+#define SET_QUEUE_TYPE_MARKER(queue)        ((queue)->meta |= QUEUE_TYPE_MARKER)
+#define IS_ADDR_IN_BUFFER_RANGE(addr) ((((SCPAddr)(addr) >= scp.buffer) && \
+                                        ((SCPAddr)(addr) < &scp.buffer[SCP_TOTAL_BUFFER_SIZE])) ? \
+                                        SCPBool_true : SCPBool_false)
+#define IS_ADDR_IN_QUEUE_RANGE(addr, queue) (((SCPAddr)(addr) >= START_OF_QUEUE_DATA(queue)) && \
+                                                ((SCPAddr)(addr) < END_OF_QUEUE_DATA(queue)) ? SCPBool_true : SCPBool_false)
+#define IS_QUEUE_VALID(queue)       ((IS_QUEUE(queue) && \
+                                    IS_ADDR_IN_BUFFER_RANGE(queue) && \
+                                    IS_ADDR_IN_QUEUE_RANGE((queue)->c.q.head, (queue)) && \
+                                    IS_ADDR_IN_QUEUE_RANGE((queue)->c.q.tail, (queue)) && \
                                     ((queue)->c.q.maxNoOfElem > 0) && \
                                     ((queue)->c.q.sizeOfElem > 0)) ? SCPBool_true : SCPBool_false)
 
