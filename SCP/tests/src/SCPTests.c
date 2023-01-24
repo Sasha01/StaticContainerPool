@@ -1,6 +1,5 @@
 
 #include <stdio.h>
-#include "SCPTests.h"
 
 
 void SCPTests_run(void)
