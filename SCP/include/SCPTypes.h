@@ -29,6 +29,7 @@ typedef enum {
     SCPBool_true
 }SCPBool;
 
+#if SCP_ENABLE_API_QUEUE
 /**
  * @brief Type that describes a queue. Only for internal use.
  * 
@@ -39,6 +40,19 @@ typedef struct  {
     SCPAddr tail;           /**< Pointer to the tail of the queue.*/
     SCPAddr head;           /**< Pointer to the head of the queue.*/
 }SCPQueue;
+#endif  /* SCP_ENABLE_API_QUEUE */
+
+#if SCP_ENABLE_API_STACK
+/**
+ * @brief Type that describes a stack. Only for internal use.
+ * 
+ */
+typedef struct  {
+    SCPUWord maxNoOfElem;   /**< Maximum number of elements in the stack.*/
+    SCPUWord sizeOfElem;    /**< Size of an element in bytes.*/
+    SCPAddr top;           /**< Pointer to the top of the stack.*/
+}SCPStack;
+#endif /* SCP_ENABLE_API_STACK */
 
 /**
  * @brief Type that describes a general container. Only for internal use.
@@ -50,6 +64,10 @@ typedef struct {
         #if SCP_ENABLE_API_QUEUE
         SCPQueue q;         /**< Representation of the queue. */
         #endif  /* SCP_ENABLE_API_QUEUE */
+        
+        #if SCP_ENABLE_API_STACK
+        SCPStack s;
+        #endif /* SCP_ENABLE_API_STACK */
     }c;                     /**< Representation of the container. */
 }SCPContainer;
 

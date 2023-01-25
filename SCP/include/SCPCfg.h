@@ -43,4 +43,10 @@
  */
 #define SCP_ENABLE_API_QUEUE 1
 
+/**
+ * @brief Macro to enable or disable stack handling. If stacks are not needed, set this to 0.
+ * 
+ */
+#define SCP_ENABLE_API_STACK 1
+
 #endif /* SCPCFG_H */
