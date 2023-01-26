@@ -55,7 +55,7 @@ typedef struct  {
 #endif /* SCP_ENABLE_API_STACK */
 
 /**
- * @brief Type that describes a general container. Only for internal use.
+ * @brief Type that describes a generic container. Only for internal use.
  * 
  */
 typedef struct {
@@ -64,9 +64,9 @@ typedef struct {
         #if SCP_ENABLE_API_QUEUE
         SCPQueue q;         /**< Representation of the queue. */
         #endif  /* SCP_ENABLE_API_QUEUE */
-        
+
         #if SCP_ENABLE_API_STACK
-        SCPStack s;
+        SCPStack s;         /**< Representation of the stack. */
         #endif /* SCP_ENABLE_API_STACK */
     }c;                     /**< Representation of the container. */
 }SCPContainer;

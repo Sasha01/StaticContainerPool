@@ -25,6 +25,14 @@
 SCPContainer* SCPQueue_create(const SCPUWord noOfElem, const SCPUWord sizeOfElem);
 
 /**
+ * @brief Deletes the queue.
+ * @details Only the last created container can be deleted for now. Later on the plan is to add the functionality to delete any container.
+ * @param q Queue to be deleted.
+ * @return SCPStatus - success/failed
+ */
+SCPStatus SCPQueue_delete(SCPContainer* const q);
+
+/**
  * @brief Pushes one element in the queue.
  * 
  * @param q - reference to the queue.

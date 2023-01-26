@@ -16,7 +16,7 @@
 
 #if SCP_ENABLE_API_QUEUE
 #include "SCPQueue.h"
-#endif
+#endif /* SCP_ENABLE_API_QUEUE */
 
 
 #endif /* SCP_H*/

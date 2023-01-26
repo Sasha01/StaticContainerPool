@@ -17,8 +17,8 @@
 #define IS_ADDR_IN_QUEUE_RANGE(addr, queue) (((SCPAddr)(addr) >= START_OF_CONTAINER_DATA(queue)) && \
                                                 ((SCPAddr)(addr) < END_OF_QUEUE_DATA(queue)))
 
-#define IS_QUEUE_VALID(queue)       ((IS_QUEUE(queue) && \
-                                    IS_ADDR_IN_BUFFER_RANGE(queue) && \
+#define IS_QUEUE_VALID(queue)       ((IS_ADDR_IN_BUFFER_RANGE(queue) && \
+                                    IS_QUEUE(queue) && \
                                     IS_ADDR_IN_QUEUE_RANGE((queue)->c.q.head, (queue)) && \
                                     IS_ADDR_IN_QUEUE_RANGE((queue)->c.q.tail, (queue)) && \
                                     ((queue)->c.q.maxNoOfElem > 0) && \
@@ -30,61 +30,84 @@ static void createEmptyQueue(SCPContainer** newQueue, const SCPUWord elem, const
 
 SCPContainer* SCPQueue_create(const SCPUWord noOfElem, const SCPUWord sizeOfElem)
 {
-    SCP_ENTER_CRITICAL_SECTION();
     SCPContainer* newQueue = SCP_NULL;
-    /* If this is the first to be created, initialize nextFree. */
-    if (scp.nextFree == SCP_NULL)
+    if ((noOfElem > 0) && (sizeOfElem > 0))
     {
-        scp.nextFree = (SCPContainer*)&scp.buffer[0];
+        SCP_ENTER_CRITICAL_SECTION();
+        /* If this is the first to be created, initialize nextFree. */
+        if (scp.nextFree == SCP_NULL)
+        {
+            scp.nextFree = (SCPContainer*)&scp.buffer[0];
+        }
+
+        /* check the free space in the buffer */
+        SCPUWord neededSpace = sizeof(SCPContainer) + (noOfElem * sizeOfElem);
+        SCPUWord freeSpace = SCP_TOTAL_BUFFER_SIZE - ((SCPAddr)scp.nextFree - scp.buffer);
+        if (freeSpace >= neededSpace)
+        {
+            /* there is enough space for the queue, create it */
+            createEmptyQueue(&newQueue, noOfElem, sizeOfElem);
+        }    
+        SCP_EXIT_CRITICAL_SECTION();
     }
-
-    /* check the free space in the buffer */
-    SCPUWord neededSpace = sizeof(SCPContainer) + (noOfElem * sizeOfElem);
-    SCPUWord freeSpace = SCP_TOTAL_BUFFER_SIZE - ((SCPAddr)scp.nextFree - scp.buffer);
-    if (freeSpace >= neededSpace)
-    {
-        /* there is enough space for the queue, create it */
-        createEmptyQueue(&newQueue, noOfElem, sizeOfElem);
-    }    
-
-    SCP_EXIT_CRITICAL_SECTION();
+    
     return newQueue;
 }
 
-SCPStatus SCPQueue_push(SCPContainer* const q, SCPAddr const data)
+SCPStatus SCPQueue_delete(SCPContainer* const q)
 {
     SCPStatus status = SCPStatus_failed;
-    if (IS_QUEUE_VALID(q) && (data != SCP_NULL) && !IS_CONTAINER_FULL(q))
+    if (IS_QUEUE_VALID(q))
     {
-        memcpy(data, q->c.q.head, q->c.q.sizeOfElem);
-        // advance the head
-        q->c.q.head += q->c.q.sizeOfElem;
-        if (q->c.q.head >= END_OF_QUEUE_DATA(q))
+        SCP_ENTER_CRITICAL_SECTION();
+        /* check if it's the last queue created. */
+        if (END_OF_QUEUE_DATA(q) == (SCPAddr)scp.nextFree)
         {
-            q->c.q.head = START_OF_CONTAINER_DATA(q);
+            RESET_CONTAINER_METADATA(q);
+            /* set the head and tail as identical so the queue is empty. */
+            q->c.q.tail = q->c.q.head;
+            scp.nextFree = q;
+            status = SCPStatus_success;
         }
-        if (q->c.q.head == q->c.q.tail)
+        SCP_EXIT_CRITICAL_SECTION();
+    }
+    return status;
+}
+
+SCPStatus SCPQueue_push(SCPContainer* const container, SCPAddr const data)
+{
+    SCPStatus status = SCPStatus_failed;
+    if (IS_QUEUE_VALID(container) && (data != SCP_NULL) && !IS_CONTAINER_FULL(container))
+    {
+        memcpy(container->c.q.head, data, container->c.q.sizeOfElem);
+        // advance the head
+        container->c.q.head += container->c.q.sizeOfElem;
+        if (container->c.q.head >= END_OF_QUEUE_DATA(container))
         {
-            SET_CONTAINER_FULL(q);
+            container->c.q.head = START_OF_CONTAINER_DATA(container);
+        }
+        if (container->c.q.head == container->c.q.tail)
+        {
+            SET_CONTAINER_FULL(container);
         }
         status = SCPStatus_success;
     }
     return status;
 }
 
-SCPStatus SCPQueue_pop(SCPContainer* const q, SCPAddr data)
+SCPStatus SCPQueue_pop(SCPContainer* const container, SCPAddr data)
 {
     SCPStatus status = SCPStatus_failed;
-    if (IS_QUEUE_VALID(q) && (data != SCP_NULL) && !IS_QUEUE_EMPTY(q))
+    if (IS_QUEUE_VALID(container) && (data != SCP_NULL) && !IS_QUEUE_EMPTY(container))
     {
-        memcpy(data, q->c.q.tail, q->c.q.sizeOfElem);
+        memcpy(data, container->c.q.tail, container->c.q.sizeOfElem);
         // advance the tail
-        q->c.q.tail += q->c.q.sizeOfElem;
-        if (q->c.q.tail >= END_OF_QUEUE_DATA(q))
+        container->c.q.tail += container->c.q.sizeOfElem;
+        if (container->c.q.tail >= END_OF_QUEUE_DATA(container))
         {
-            q->c.q.tail = START_OF_CONTAINER_DATA(q);
+            container->c.q.tail = START_OF_CONTAINER_DATA(container);
         }
-        CLEAR_CONTAINER_FULL(q);
+        CLEAR_CONTAINER_FULL(container);
         status = SCPStatus_success;
     }
     return status;
@@ -92,12 +115,22 @@ SCPStatus SCPQueue_pop(SCPContainer* const q, SCPAddr data)
 
 SCPBool SCPQueue_isEmpty(SCPContainer* const q)
 {
-    return IS_QUEUE_EMPTY(q);
+    SCPBool isEmpty = SCPBool_true;
+    if (IS_QUEUE_VALID(q))
+    {
+        isEmpty = IS_QUEUE_EMPTY(q);
+    }
+    return isEmpty;
 }
 
 SCPBool SCPQueue_isFull(SCPContainer* const q)
 {
-    return IS_CONTAINER_FULL(q);
+    SCPBool isFull = SCPBool_false;
+    if (IS_QUEUE_VALID(q))
+    {
+        isFull = IS_CONTAINER_FULL(q);
+    }
+    return isFull;
 }
 
 SCPUWord SCPQueue_getCount(const SCPContainer* const q)

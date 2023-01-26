@@ -105,6 +105,9 @@ Functions</h2></td></tr>
 <tr class="memitem:ad133550cfdcbb8235ca71f1cfa793537"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structSCPContainer.html">SCPContainer</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SCPQueue_8h.html#ad133550cfdcbb8235ca71f1cfa793537">SCPQueue_create</a> (const <a class="el" href="SCPTypes_8h.html#ab97001cb6ab60a3210ce8a84e5951d92">SCPUWord</a> noOfElem, const <a class="el" href="SCPTypes_8h.html#ab97001cb6ab60a3210ce8a84e5951d92">SCPUWord</a> sizeOfElem)</td></tr>
 <tr class="memdesc:ad133550cfdcbb8235ca71f1cfa793537"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a queue from the static pool.  <a href="SCPQueue_8h.html#ad133550cfdcbb8235ca71f1cfa793537">More...</a><br /></td></tr>
 <tr class="separator:ad133550cfdcbb8235ca71f1cfa793537"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aca4888b495e675a6d59065f447bc5b02"><td class="memItemLeft" align="right" valign="top"><a class="el" href="SCPTypes_8h.html#a6e385d0b7e91765667a83da82085aeb5">SCPStatus</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SCPQueue_8h.html#aca4888b495e675a6d59065f447bc5b02">SCPQueue_delete</a> (<a class="el" href="structSCPContainer.html">SCPContainer</a> *const q)</td></tr>
+<tr class="memdesc:aca4888b495e675a6d59065f447bc5b02"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deletes the queue.  <a href="SCPQueue_8h.html#aca4888b495e675a6d59065f447bc5b02">More...</a><br /></td></tr>
+<tr class="separator:aca4888b495e675a6d59065f447bc5b02"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab2e5192129c164704c90cde5b0121826"><td class="memItemLeft" align="right" valign="top"><a class="el" href="SCPTypes_8h.html#a6e385d0b7e91765667a83da82085aeb5">SCPStatus</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SCPQueue_8h.html#ab2e5192129c164704c90cde5b0121826">SCPQueue_push</a> (<a class="el" href="structSCPContainer.html">SCPContainer</a> *const q, <a class="el" href="SCPTypes_8h.html#a7cee91eb54d69746afbe974f2190a075">SCPAddr</a> data)</td></tr>
 <tr class="memdesc:ab2e5192129c164704c90cde5b0121826"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pushes one element in the queue.  <a href="SCPQueue_8h.html#ab2e5192129c164704c90cde5b0121826">More...</a><br /></td></tr>
 <tr class="separator:ab2e5192129c164704c90cde5b0121826"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -163,6 +166,33 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>SCPContainer* - NULL if failed, non-NULL if successful. </dd></dl>
+
+</div>
+</div>
+<a id="aca4888b495e675a6d59065f447bc5b02"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aca4888b495e675a6d59065f447bc5b02">&#9670;&nbsp;</a></span>SCPQueue_delete()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="SCPTypes_8h.html#a6e385d0b7e91765667a83da82085aeb5">SCPStatus</a> SCPQueue_delete </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structSCPContainer.html">SCPContainer</a> *const&#160;</td>
+          <td class="paramname"><em>q</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Deletes the queue. </p>
+<p>Only the last created queue can be deleted for now. Later on the plan is to add the functionality to delete any container. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">q</td><td>Queue to be deleted. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>SCPStatus - success/failed </dd></dl>
 
 </div>
 </div>

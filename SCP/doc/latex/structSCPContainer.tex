@@ -2,7 +2,7 @@
 \label{structSCPContainer}\index{SCPContainer@{SCPContainer}}
 
 
-Type that describes a general container. Only for internal use.  
+Type that describes a generic container. Only for internal use.  
 
 
 
@@ -11,11 +11,12 @@ Type that describes a general container. Only for internal use.
 
 
 
-Collaboration diagram for SCPContainer\+:\nopagebreak
+Collaboration diagram for SCPContainer\+:
+\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
-\includegraphics[width=163pt]{structSCPContainer__coll__graph}
+\includegraphics[width=228pt]{structSCPContainer__coll__graph}
 \end{center}
 \end{figure}
 \doxysubsection*{Data Fields}
@@ -27,13 +28,14 @@ Collaboration diagram for SCPContainer\+:\nopagebreak
 xx\=xx\=xx\=xx\=xx\=xx\=xx\=xx\=xx\=\kill
 union \{\\
 \>\mbox{\hyperlink{structSCPQueue}{SCPQueue}} \mbox{\hyperlink{structSCPContainer_aa4683466248d9ecce9b341676e7471cf}{q}}\\
+\>\mbox{\hyperlink{structSCPStack}{SCPStack}} \mbox{\hyperlink{structSCPContainer_a15a4a0c16b2c1871a646b3ff6e01edfa}{s}}\\
 \} \mbox{\hyperlink{structSCPContainer_af3241d9827272e4959b1b6ed97103d6d}{c}}\\
 
 \end{tabbing}\end{DoxyCompactItemize}
 
 
 \doxysubsection{Detailed Description}
-Type that describes a general container. Only for internal use. 
+Type that describes a generic container. Only for internal use. 
 
 \doxysubsection{Field Documentation}
 \mbox{\Hypertarget{structSCPContainer_af3241d9827272e4959b1b6ed97103d6d}\label{structSCPContainer_af3241d9827272e4959b1b6ed97103d6d}} 
@@ -54,7 +56,13 @@ Meta information. Reserved for future use. \mbox{\Hypertarget{structSCPContainer
 \doxysubsubsection{\texorpdfstring{q}{q}}
 {\footnotesize\ttfamily \mbox{\hyperlink{structSCPQueue}{SCPQueue}} SCPContainer\+::q}
 
-Representation of the queue. 
+Representation of the queue. \mbox{\Hypertarget{structSCPContainer_a15a4a0c16b2c1871a646b3ff6e01edfa}\label{structSCPContainer_a15a4a0c16b2c1871a646b3ff6e01edfa}} 
+\index{SCPContainer@{SCPContainer}!s@{s}}
+\index{s@{s}!SCPContainer@{SCPContainer}}
+\doxysubsubsection{\texorpdfstring{s}{s}}
+{\footnotesize\ttfamily \mbox{\hyperlink{structSCPStack}{SCPStack}} SCPContainer\+::s}
+
+Representation of the stack. 
 
 The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
 \item 

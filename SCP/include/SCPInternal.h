@@ -25,6 +25,12 @@ extern SCPInternalType scp;
                                                     ((SCPAddr)(addr) < &scp.buffer[SCP_TOTAL_BUFFER_SIZE])) ? \
                                                     SCPBool_true : SCPBool_false)
 
-#define SET_CONTAINER_TYPE_MARKER(cntr, type)       ((cntr)->meta |= (((type) & CONTAINER_TYPE_MASK) << CONTAINER_TYPE_POS))
+#define RESET_CONTAINER_METADATA(cntr)              ((cntr)->meta = 0)
+
+#define REMOVE_CONTAINER_TYPE_MARKER(cntr)          ((cntr)->meta &= ~(CONTAINER_TYPE_MASK << CONTAINER_TYPE_POS))
+
+#define SET_CONTAINER_TYPE_MARKER(cntr, type)       REMOVE_CONTAINER_TYPE_MARKER(cntr); \
+                                                    ((cntr)->meta |= (((type) & CONTAINER_TYPE_MASK) << CONTAINER_TYPE_POS))
 
 #define GET_CONTAINER_TYPE_MARKER(cntr)             (((cntr)->meta & CONTAINER_TYPE_MASK) >> CONTAINER_TYPE_POS)
+

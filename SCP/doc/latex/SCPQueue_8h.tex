@@ -26,6 +26,8 @@ This graph shows which files directly or indirectly include this file\+:\nopageb
 \item 
 \mbox{\hyperlink{structSCPContainer}{SCPContainer}} $\ast$ \mbox{\hyperlink{SCPQueue_8h_ad133550cfdcbb8235ca71f1cfa793537}{SCPQueue\+\_\+create}} (const \mbox{\hyperlink{SCPTypes_8h_ab97001cb6ab60a3210ce8a84e5951d92}{SCPUWord}} no\+Of\+Elem, const \mbox{\hyperlink{SCPTypes_8h_ab97001cb6ab60a3210ce8a84e5951d92}{SCPUWord}} size\+Of\+Elem)
 \begin{DoxyCompactList}\small\item\em Creates a queue from the static pool. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{SCPTypes_8h_a6e385d0b7e91765667a83da82085aeb5}{SCPStatus}} \mbox{\hyperlink{SCPQueue_8h_aca4888b495e675a6d59065f447bc5b02}{SCPQueue\+\_\+delete}} (\mbox{\hyperlink{structSCPContainer}{SCPContainer}} $\ast$const q)
+\begin{DoxyCompactList}\small\item\em Deletes the queue. \end{DoxyCompactList}\item 
 \mbox{\hyperlink{SCPTypes_8h_a6e385d0b7e91765667a83da82085aeb5}{SCPStatus}} \mbox{\hyperlink{SCPQueue_8h_ab2e5192129c164704c90cde5b0121826}{SCPQueue\+\_\+push}} (\mbox{\hyperlink{structSCPContainer}{SCPContainer}} $\ast$const q, \mbox{\hyperlink{SCPTypes_8h_a7cee91eb54d69746afbe974f2190a075}{SCPAddr}} data)
 \begin{DoxyCompactList}\small\item\em Pushes one element in the queue. \end{DoxyCompactList}\item 
 \mbox{\hyperlink{SCPTypes_8h_a6e385d0b7e91765667a83da82085aeb5}{SCPStatus}} \mbox{\hyperlink{SCPQueue_8h_a0791a049a7880513468f0ec704a59494}{SCPQueue\+\_\+pop}} (\mbox{\hyperlink{structSCPContainer}{SCPContainer}} $\ast$const q, \mbox{\hyperlink{SCPTypes_8h_a7cee91eb54d69746afbe974f2190a075}{SCPAddr}} data)
@@ -75,6 +77,24 @@ Creates a queue from the static pool.
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
 SCPContainer$\ast$ -\/ NULL if failed, non-\/\+NULL if successful. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{SCPQueue_8h_aca4888b495e675a6d59065f447bc5b02}\label{SCPQueue_8h_aca4888b495e675a6d59065f447bc5b02}} 
+\index{SCPQueue.h@{SCPQueue.h}!SCPQueue\_delete@{SCPQueue\_delete}}
+\index{SCPQueue\_delete@{SCPQueue\_delete}!SCPQueue.h@{SCPQueue.h}}
+\doxysubsubsection{\texorpdfstring{SCPQueue\_delete()}{SCPQueue\_delete()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{SCPTypes_8h_a6e385d0b7e91765667a83da82085aeb5}{SCPStatus}} SCPQueue\+\_\+delete (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structSCPContainer}{SCPContainer}} $\ast$const}]{q }\end{DoxyParamCaption})}
+
+
+
+Deletes the queue. 
+
+Only the last created queue can be deleted for now. Later on the plan is to add the functionality to delete any container. 
+\begin{DoxyParams}{Parameters}
+{\em q} & Queue to be deleted. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+SCPStatus -\/ success/failed 
 \end{DoxyReturn}
 \mbox{\Hypertarget{SCPQueue_8h_a8a8b4708e4e543f80c10ea6b8296d35f}\label{SCPQueue_8h_a8a8b4708e4e543f80c10ea6b8296d35f}} 
 \index{SCPQueue.h@{SCPQueue.h}!SCPQueue\_getCount@{SCPQueue\_getCount}}
