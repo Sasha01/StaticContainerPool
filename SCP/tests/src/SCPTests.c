@@ -250,6 +250,13 @@ static void SCPTests_testQueuePushPop(void)
     /* clean-up */
     status = SCPQueue_delete(q1);
     assert(status == SCPStatus_success);
+
+    /* try to push into a deleted queue */
+    status = SCPQueue_push(q1, (SCPAddr)&q1val4);
+    assert(status == SCPStatus_failed);
+    /* try to pop from a deleted queue */
+    status = SCPQueue_pop(q1, (SCPAddr)&q1out);
+    assert(status == SCPStatus_failed);
 }
 
 static void SCPTests_testQueueIsEmpty(void)
