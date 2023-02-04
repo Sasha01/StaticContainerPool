@@ -22,8 +22,15 @@
 /***** DEFINES *******************/
 /**
  * @brief The total size of the static pool used to create containers.
+ * @note For testing purposes this value was set to 1000u.
 */
 #define SCP_TOTAL_BUFFER_SIZE 1000u
+
+/**
+ * @brief Maximum number of containers that can be created. Sort of related to @ref SCP_TOTAL_BUFFER_SIZE but it's the user's job to align these two.
+ * @note For testing purposes this value was set to 10u.
+ */
+#define SCP_MAX_NO_OF_CONTAINERS 10u
 
 /**
  * @brief Macro for entering a critical section. This should prevent the current task from being preempted while executing in a critical section. To be defined by user.

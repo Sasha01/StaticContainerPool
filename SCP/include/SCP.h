@@ -14,6 +14,8 @@
 #include "SCPCfg.h"
 #include "SCPTypes.h"
 
+void SCP_init(void);
+
 #if SCP_ENABLE_API_QUEUE
 #include "SCPQueue.h"
 #endif /* SCP_ENABLE_API_QUEUE */

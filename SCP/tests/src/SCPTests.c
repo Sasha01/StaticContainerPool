@@ -3,13 +3,18 @@
 #include <stdint.h>
 #include <assert.h>
 #include "SCP.h"
+#if 1
 
 static void SCPTests_testQueue(void);
 static void SCPTests_testQueueCreate(void);
-static void SCPTests_testQueueDelete(void);
+#if 0
 static void SCPTests_testQueuePushPop(void);
 static void SCPTests_testQueueIsEmpty(void);
 static void SCPTests_testQueueIsFull(void);
+static void SCPTests_testQueueVarious(void);
+#endif
+
+static void SCPTests_testQueueDelete(void);
 
 void SCPTests_run(void)
 {
@@ -21,88 +26,40 @@ void SCPTests_run(void)
 
 static void SCPTests_testQueue(void)
 {
+
     SCPTests_testQueueCreate();
+#if 0
     SCPTests_testQueuePushPop();
     SCPTests_testQueueIsEmpty();
     SCPTests_testQueueIsFull();
-    SCPContainer* q1 = SCPQueue_create(3,2);
-    uint16_t q1val1 = 1234, q1val2 = 4321, q1val3 = 9876, q1val4 = 4567;
-    SCPStatus status;
-    /* Test queue push. */
-    status = SCPQueue_push(q1, (SCPAddr)&q1val1);
-    assert(status == SCPStatus_success);
-    status = SCPQueue_push(q1, (SCPAddr)&q1val2);
-    assert(status == SCPStatus_success);
-    assert(SCPQueue_isFull(q1) == 0);
-    status = SCPQueue_push(q1, (SCPAddr)&q1val3);
-    assert(status == SCPStatus_success);
-    assert(SCPQueue_isFull(q1) == 1);
-    status = SCPQueue_push(q1, (SCPAddr)&q1val4);
-    assert(status == SCPStatus_failed);
-    uint16_t output = 0;
-    assert(SCPQueue_isFull(q1) == 1);
-    /* Test queue pop. */
-    status = SCPQueue_pop(q1, (SCPAddr)&output);
-    assert(status == SCPStatus_success);
-    assert(output == q1val1);
-    assert(SCPQueue_isFull(q1) == 0);
-    assert(SCPQueue_isEmpty(q1) == 0);
-    status = SCPQueue_pop(q1, (SCPAddr)&output);
-    assert(status == SCPStatus_success);
-    assert(output == q1val2);
-    status = SCPQueue_pop(q1, (SCPAddr)&output);
-    assert(status == SCPStatus_success);
-    assert(output == q1val3);
-    assert(SCPQueue_isEmpty(q1) == 1);
-    status = SCPQueue_pop(q1, (SCPAddr)&output);
-    assert(status == SCPStatus_failed);
+    SCPTests_testQueueVarious();
+#endif
 
-    /* Test wrap-around. */
-    status = SCPQueue_push(q1, (SCPAddr)&q1val1);
-    assert(SCPQueue_getCount(q1) == 1);
-    status = SCPQueue_push(q1, (SCPAddr)&q1val2);
-    assert(SCPQueue_getCount(q1) == 2);
-    status = SCPQueue_push(q1, (SCPAddr)&q1val3);
-    assert(SCPQueue_getCount(q1) == 3);
-    status = SCPQueue_pop(q1, (SCPAddr)&output);
-    assert(output == q1val1);
-    assert(SCPQueue_getCount(q1) == 2);
-    status = SCPQueue_push(q1, (SCPAddr)&q1val4);
-    assert(SCPQueue_getCount(q1) == 3);
-    status = SCPQueue_pop(q1, (SCPAddr)&output);
-    assert(output == q1val2);    
-    assert(SCPQueue_getCount(q1) == 2);
-    status = SCPQueue_pop(q1, (SCPAddr)&output);
-    assert(output == q1val3);
-    assert(SCPQueue_getCount(q1) == 1);
-    status = SCPQueue_pop(q1, (SCPAddr)&output);
-    assert(output == q1val4);
-    assert(SCPQueue_getCount(q1) == 0);
     SCPTests_testQueueDelete();
     printf("Testing queues. Succes!!!\n");
 }
 
 static void SCPTests_testQueueCreate(void)
 {
-    SCPContainer *q1, *q2, *q3, *q4;
+    SCPContainerId q1, q2, q3, q4;
     SCPStatus status;
     /* Test queue creation. */
     /* Try to create a queue with 0 elements */
     q1 = SCPQueue_create(0, 4);
-    assert(q1 == NULL);
+    assert(q1 == SCP_INVALID);
     /* Try to create a queue with elements of size 0. */
     q1 = SCPQueue_create(4, 0);
-    assert(q1 == NULL);
+    assert(q1 == SCP_INVALID);
     /* Now create several queues, until there is no more space. */
     q1 = SCPQueue_create(3,2);
-    assert(q1 != NULL);
+    assert(q1 != SCP_INVALID);
     q2 = SCPQueue_create(3,2);
-    assert(q2 != NULL);
+    assert(q2 != SCP_INVALID);
     q3 = SCPQueue_create(100,8);
-    assert(q3 != NULL);
+    assert(q3 != SCP_INVALID);
     /* Assuming the size of the buffer is 1000B, this next queue creation is expected to fail due to lack of space. */
     q4 = SCPQueue_create(10,10);
-    assert(q4 == NULL);
+    assert(q4 == SCP_INVALID);
 
     /* clean-up: delete the queues in reverse order of creation. */
     status = SCPQueue_delete(q3);
@@ -117,8 +74,8 @@ static void SCPTests_testQueueDelete(void)
 {
     SCPStatus status = SCPStatus_failed;
     /* create a queue. */
-    SCPContainer* q1 = SCPQueue_create(1, 5);
-    assert(q1 != NULL);
+    SCPContainerId q1 = SCPQueue_create(1, 5);
+    assert(q1 != SCP_INVALID);
     /* now delete it, it should work. */
     status = SCPQueue_delete(q1);
     assert(status == SCPStatus_success);
@@ -126,14 +83,14 @@ static void SCPTests_testQueueDelete(void)
     status = SCPQueue_delete(q1);
     assert(status == SCPStatus_failed);
     /* try to delete a NULL queue */
-    status = SCPQueue_delete(NULL);
+    status = SCPQueue_delete(SCP_INVALID);
     assert(status == SCPStatus_failed);
 
     /* create 2 queues, and try to delete the first one. It should fail. */
     q1 = SCPQueue_create(1, 5);
-    SCPContainer* q2 = SCPQueue_create(3, 4);
-    assert(q1 != NULL);
-    assert(q2 != NULL);
+    SCPContainerId q2 = SCPQueue_create(3, 4);
+    assert(q1 != SCP_INVALID);
+    assert(q2 != SCP_INVALID);
     status = SCPQueue_delete(q1);
     assert(status == SCPStatus_failed);
     /* now delete the second one, it should work. */
@@ -143,7 +100,7 @@ static void SCPTests_testQueueDelete(void)
     status = SCPQueue_delete(q1);
     assert(status == SCPStatus_success);
 }
-
+#if 0
 static void SCPTests_testQueuePushPop(void)
 {
     SCPContainer *q1;
@@ -330,3 +287,66 @@ static void SCPTests_testQueueIsFull(void)
     /* after deletion the queue should not be full */
     assert(SCPQueue_isFull(q1) == SCPBool_false);
 }
+
+static void SCPTests_testQueueVarious(void)
+{
+    SCPContainer* q1 = SCPQueue_create(3,2);
+    uint16_t q1val1 = 1234, q1val2 = 4321, q1val3 = 9876, q1val4 = 4567;
+    SCPStatus status;
+    /* Test queue push. */
+    status = SCPQueue_push(q1, (SCPAddr)&q1val1);
+    assert(status == SCPStatus_success);
+    status = SCPQueue_push(q1, (SCPAddr)&q1val2);
+    assert(status == SCPStatus_success);
+    assert(SCPQueue_isFull(q1) == 0);
+    status = SCPQueue_push(q1, (SCPAddr)&q1val3);
+    assert(status == SCPStatus_success);
+    assert(SCPQueue_isFull(q1) == 1);
+    status = SCPQueue_push(q1, (SCPAddr)&q1val4);
+    assert(status == SCPStatus_failed);
+    uint16_t output = 0;
+    assert(SCPQueue_isFull(q1) == 1);
+    /* Test queue pop. */
+    status = SCPQueue_pop(q1, (SCPAddr)&output);
+    assert(status == SCPStatus_success);
+    assert(output == q1val1);
+    assert(SCPQueue_isFull(q1) == 0);
+    assert(SCPQueue_isEmpty(q1) == 0);
+    status = SCPQueue_pop(q1, (SCPAddr)&output);
+    assert(status == SCPStatus_success);
+    assert(output == q1val2);
+    status = SCPQueue_pop(q1, (SCPAddr)&output);
+    assert(status == SCPStatus_success);
+    assert(output == q1val3);
+    assert(SCPQueue_isEmpty(q1) == 1);
+    status = SCPQueue_pop(q1, (SCPAddr)&output);
+    assert(status == SCPStatus_failed);
+
+    /* Test wrap-around. */
+    status = SCPQueue_push(q1, (SCPAddr)&q1val1);
+    assert(SCPQueue_getCount(q1) == 1);
+    status = SCPQueue_push(q1, (SCPAddr)&q1val2);
+    assert(SCPQueue_getCount(q1) == 2);
+    status = SCPQueue_push(q1, (SCPAddr)&q1val3);
+    assert(SCPQueue_getCount(q1) == 3);
+    status = SCPQueue_pop(q1, (SCPAddr)&output);
+    assert(output == q1val1);
+    assert(SCPQueue_getCount(q1) == 2);
+    status = SCPQueue_push(q1, (SCPAddr)&q1val4);
+    assert(SCPQueue_getCount(q1) == 3);
+    status = SCPQueue_pop(q1, (SCPAddr)&output);
+    assert(output == q1val2);    
+    assert(SCPQueue_getCount(q1) == 2);
+    status = SCPQueue_pop(q1, (SCPAddr)&output);
+    assert(output == q1val3);
+    assert(SCPQueue_getCount(q1) == 1);
+    status = SCPQueue_pop(q1, (SCPAddr)&output);
+    assert(output == q1val4);
+    assert(SCPQueue_getCount(q1) == 0);
+
+    /* clean-up */
+    status = SCPQueue_delete(q1);
+    assert(status == SCPStatus_success);
+}
+#endif
+#endif

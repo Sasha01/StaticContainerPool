@@ -26,14 +26,15 @@
 
 
 
-static void createEmptyQueue(SCPContainer** newQueue, const SCPUWord elem, const SCPUWord size);
+static SCPContainerId createEmptyQueue(const SCPUWord elem, const SCPUWord size);
 
-SCPContainer* SCPQueue_create(const SCPUWord noOfElem, const SCPUWord sizeOfElem)
+SCPContainerId SCPQueue_create(const SCPUWord noOfElem, const SCPUWord sizeOfElem)
 {
-    SCPContainer* newQueue = SCP_NULL;
+    SCPContainerId id = SCP_INVALID;
     if ((noOfElem > 0) && (sizeOfElem > 0))
     {
         SCP_ENTER_CRITICAL_SECTION();
+
         /* If this is the first to be created, initialize nextFree. */
         if (scp.nextFree == SCP_NULL)
         {
@@ -46,17 +47,18 @@ SCPContainer* SCPQueue_create(const SCPUWord noOfElem, const SCPUWord sizeOfElem
         if (freeSpace >= neededSpace)
         {
             /* there is enough space for the queue, create it */
-            createEmptyQueue(&newQueue, noOfElem, sizeOfElem);
+            id = createEmptyQueue(noOfElem, sizeOfElem);
         }    
         SCP_EXIT_CRITICAL_SECTION();
     }
     
-    return newQueue;
+    return id;
 }
 
-SCPStatus SCPQueue_delete(SCPContainer* const q)
+SCPStatus SCPQueue_delete(const SCPContainerId id)
 {
     SCPStatus status = SCPStatus_failed;
+    SCPContainer* q = SCP_getContainer(id);
     if (IS_QUEUE_VALID(q))
     {
         SCP_ENTER_CRITICAL_SECTION();
@@ -74,9 +76,10 @@ SCPStatus SCPQueue_delete(SCPContainer* const q)
     return status;
 }
 
-SCPStatus SCPQueue_push(SCPContainer* const container, SCPAddr const data)
+SCPStatus SCPQueue_push(const SCPContainerId id, SCPAddr const data)
 {
     SCPStatus status = SCPStatus_failed;
+    SCPContainer* container = SCP_getContainer(id);
     if (IS_QUEUE_VALID(container) && (data != SCP_NULL) && !IS_CONTAINER_FULL(container))
     {
         memcpy(container->c.q.head, data, container->c.q.sizeOfElem);
@@ -95,9 +98,10 @@ SCPStatus SCPQueue_push(SCPContainer* const container, SCPAddr const data)
     return status;
 }
 
-SCPStatus SCPQueue_pop(SCPContainer* const container, SCPAddr data)
+SCPStatus SCPQueue_pop(const SCPContainerId id, SCPAddr data)
 {
     SCPStatus status = SCPStatus_failed;
+    SCPContainer* container = SCP_getContainer(id);
     if (IS_QUEUE_VALID(container) && (data != SCP_NULL) && !IS_QUEUE_EMPTY(container))
     {
         memcpy(data, container->c.q.tail, container->c.q.sizeOfElem);
@@ -113,9 +117,10 @@ SCPStatus SCPQueue_pop(SCPContainer* const container, SCPAddr data)
     return status;
 }
 
-SCPBool SCPQueue_isEmpty(SCPContainer* const q)
+SCPBool SCPQueue_isEmpty(const SCPContainerId id)
 {
     SCPBool isEmpty = SCPBool_true;
+    SCPContainer* q = SCP_getContainer(id);
     if (IS_QUEUE_VALID(q))
     {
         isEmpty = IS_QUEUE_EMPTY(q);
@@ -123,9 +128,10 @@ SCPBool SCPQueue_isEmpty(SCPContainer* const q)
     return isEmpty;
 }
 
-SCPBool SCPQueue_isFull(SCPContainer* const q)
+SCPBool SCPQueue_isFull(const SCPContainerId id)
 {
     SCPBool isFull = SCPBool_false;
+    SCPContainer* q = SCP_getContainer(id);
     if (IS_QUEUE_VALID(q))
     {
         isFull = IS_CONTAINER_FULL(q);
@@ -133,9 +139,10 @@ SCPBool SCPQueue_isFull(SCPContainer* const q)
     return isFull;
 }
 
-SCPUWord SCPQueue_getCount(const SCPContainer* const q)
+SCPUWord SCPQueue_getCount(const SCPContainerId id)
 {
     SCPUWord noOfElem;
+    SCPContainer* q = SCP_getContainer(id);
     if (IS_QUEUE_EMPTY(q))
     {
         noOfElem = 0;
@@ -155,13 +162,20 @@ SCPUWord SCPQueue_getCount(const SCPContainer* const q)
     return noOfElem;
 }
 
-static void createEmptyQueue(SCPContainer** newQueue, const SCPUWord elem, const SCPUWord size)
+static SCPContainerId createEmptyQueue(const SCPUWord elem, const SCPUWord size)
 {
-    (*newQueue) = scp.nextFree;
-    (*newQueue)->c.q.maxNoOfElem = elem;
-    (*newQueue)->c.q.sizeOfElem = size;
-    (*newQueue)->c.q.head = (SCPAddr)*newQueue + sizeof(SCPContainer);
-    (*newQueue)->c.q.tail = (*newQueue)->c.q.head;
-    SET_QUEUE_TYPE_MARKER(*newQueue);
-    scp.nextFree = (SCPContainer*)END_OF_QUEUE_DATA(scp.nextFree);
+    SCPContainerId id = SCP_getNextFreeId();
+    if (id != SCP_INVALID)
+    {
+        SCPContainer* newQueue = scp.nextFree; 
+        newQueue->c.q.maxNoOfElem = elem;
+        newQueue->c.q.sizeOfElem = size;
+        newQueue->c.q.head = (SCPAddr)newQueue + sizeof(SCPContainer);
+        newQueue->c.q.tail = newQueue->c.q.head;
+        SET_QUEUE_TYPE_MARKER(newQueue);
+        scp.nextFree = (SCPContainer*)END_OF_QUEUE_DATA(scp.nextFree);
+        scp.map[id] = newQueue;  
+    }
+    
+    return id;
 }

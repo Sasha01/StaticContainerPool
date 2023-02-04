@@ -1,8 +1,54 @@
+#ifndef SCPINTERNAL_H
+#define SCPINTERNAL_H
+
 #include "SCPCfg.h"
 #include "SCPTypes.h"
 
+#if SCP_ENABLE_API_QUEUE
+/**
+ * @brief Type that describes a queue. Only for internal use.
+ * 
+ */
+typedef struct  {
+    SCPUWord maxNoOfElem;   /**< Maximum number of elements in the queue.*/
+    SCPUWord sizeOfElem;    /**< Size of an element in bytes.*/
+    SCPAddr tail;           /**< Pointer to the tail of the queue.*/
+    SCPAddr head;           /**< Pointer to the head of the queue.*/
+}SCPQueue;
+#endif  /* SCP_ENABLE_API_QUEUE */
+
+#if SCP_ENABLE_API_STACK
+/**
+ * @brief Type that describes a stack. Only for internal use.
+ * 
+ */
+typedef struct  {
+    SCPUWord maxNoOfElem;   /**< Maximum number of elements in the stack.*/
+    SCPUWord sizeOfElem;    /**< Size of an element in bytes.*/
+    SCPAddr top;           /**< Pointer to the top of the stack.*/
+}SCPStack;
+#endif /* SCP_ENABLE_API_STACK */
+
+/**
+ * @brief Type that describes a generic container. Only for internal use.
+ * 
+ */
+typedef struct {
+    SCPUWord meta;          /**< Meta information. Reserved for future use.*/
+    union {
+        #if SCP_ENABLE_API_QUEUE
+        SCPQueue q;         /**< Representation of the queue. */
+        #endif  /* SCP_ENABLE_API_QUEUE */
+
+        #if SCP_ENABLE_API_STACK
+        SCPStack s;         /**< Representation of the stack. */
+        #endif /* SCP_ENABLE_API_STACK */
+    }c;                     /**< Representation of the container. */
+}SCPContainer;
+
 typedef struct {
     SCPContainer* nextFree;
+    SCPContainer* map[SCP_MAX_NO_OF_CONTAINERS];
     SCPUByte buffer[SCP_TOTAL_BUFFER_SIZE];
 }SCPInternalType;
 
@@ -34,3 +80,8 @@ extern SCPInternalType scp;
 
 #define GET_CONTAINER_TYPE_MARKER(cntr)             (((cntr)->meta & CONTAINER_TYPE_MASK) >> CONTAINER_TYPE_POS)
 
+
+SCPContainerId SCP_getNextFreeId(void);
+SCPContainer* SCP_getContainer(const SCPContainerId contId);
+
+#endif // SCPINTERNAL_H
