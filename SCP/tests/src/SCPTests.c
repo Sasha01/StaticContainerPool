@@ -3,16 +3,14 @@
 #include <stdint.h>
 #include <assert.h>
 #include "SCP.h"
-#if 1
 
 static void SCPTests_testQueue(void);
 static void SCPTests_testQueueCreate(void);
-#if 0
 static void SCPTests_testQueuePushPop(void);
 static void SCPTests_testQueueIsEmpty(void);
 static void SCPTests_testQueueIsFull(void);
 static void SCPTests_testQueueVarious(void);
-#endif
+
 
 static void SCPTests_testQueueDelete(void);
 
@@ -28,13 +26,10 @@ static void SCPTests_testQueue(void)
 {
 
     SCPTests_testQueueCreate();
-#if 0
     SCPTests_testQueuePushPop();
     SCPTests_testQueueIsEmpty();
     SCPTests_testQueueIsFull();
     SCPTests_testQueueVarious();
-#endif
-
     SCPTests_testQueueDelete();
     printf("Testing queues. Succes!!!\n");
 }
@@ -100,17 +95,17 @@ static void SCPTests_testQueueDelete(void)
     status = SCPQueue_delete(q1);
     assert(status == SCPStatus_success);
 }
-#if 0
+
 static void SCPTests_testQueuePushPop(void)
 {
-    SCPContainer *q1;
+    SCPContainerId q1;
     SCPStatus status;
     const uint16_t q1val1 = 0x1234, q1val2 = 0x5678, q1val3 = 0x9021, q1val4 = 0x1010;
     uint16_t q1out;
     
     /* create 2 queues*/
     q1 = SCPQueue_create(3, 2);
-    assert (q1 != NULL);
+    assert (q1 != SCP_INVALID);
 
     /* now push an element and pop it. The result should be identical. */
     status = SCPQueue_push(q1, (SCPAddr)&q1val1);
@@ -189,7 +184,7 @@ static void SCPTests_testQueuePushPop(void)
     status = SCPQueue_push(q1, NULL);
     assert(status == SCPStatus_failed);
     /* push into a NULL queue */
-    status = SCPQueue_push(NULL, (SCPAddr)&q1val1);
+    status = SCPQueue_push(SCP_INVALID, (SCPAddr)&q1val1);
     assert(status == SCPStatus_failed);
     /* try to pop from an empty queue */
     assert(SCPQueue_isEmpty(q1));
@@ -201,7 +196,7 @@ static void SCPTests_testQueuePushPop(void)
     status = SCPQueue_pop(q1, NULL);
     assert(status == SCPStatus_failed);
     /* now try to pop from a NULL queue. */
-    status = SCPQueue_pop(NULL, (SCPAddr)&q1out);
+    status = SCPQueue_pop(SCP_INVALID, (SCPAddr)&q1out);
     assert(status == SCPStatus_failed);
 
     /* clean-up */
@@ -219,7 +214,7 @@ static void SCPTests_testQueuePushPop(void)
 static void SCPTests_testQueueIsEmpty(void)
 {
     SCPStatus status;
-    SCPContainer *q1;
+    SCPContainerId q1;
     const uint16_t q1val = 0x1234;
     uint16_t q1out;
     q1 = SCPQueue_create(3, 2);
@@ -244,8 +239,8 @@ static void SCPTests_testQueueIsEmpty(void)
     (void) SCPQueue_pop(q1, (SCPAddr)&q1out);
     assert(SCPQueue_isEmpty(q1) == SCPBool_true);
 
-    /* check that a NULL queue is empty */
-    assert(SCPQueue_isEmpty(NULL) == SCPBool_true);
+    /* check that an invalid queue is empty */
+    assert(SCPQueue_isEmpty(SCP_INVALID) == SCPBool_true);
 
     /* add some values in the queue to check if after deletion the queue is empty */
     (void)SCPQueue_push(q1, (SCPAddr)&q1val);    
@@ -262,7 +257,7 @@ static void SCPTests_testQueueIsEmpty(void)
 static void SCPTests_testQueueIsFull(void)
 {
     SCPStatus status;
-    SCPContainer *q1;
+    SCPContainerId q1;
     const uint16_t q1val = 0x1234;
     q1 = SCPQueue_create(3, 2);
 
@@ -278,8 +273,8 @@ static void SCPTests_testQueueIsFull(void)
     (void)SCPQueue_push(q1, (SCPAddr)&q1val);  
     assert(SCPQueue_isFull(q1) == SCPBool_true);    
 
-    /* check that a NULL queue is not full */
-    assert(SCPQueue_isFull(NULL) == SCPBool_false);
+    /* check that an invalid queue is not full */
+    assert(SCPQueue_isFull(SCP_INVALID) == SCPBool_false);
 
     /* clean-up */
     status = SCPQueue_delete(q1);
@@ -290,7 +285,7 @@ static void SCPTests_testQueueIsFull(void)
 
 static void SCPTests_testQueueVarious(void)
 {
-    SCPContainer* q1 = SCPQueue_create(3,2);
+    SCPContainerId q1 = SCPQueue_create(3,2);
     uint16_t q1val1 = 1234, q1val2 = 4321, q1val3 = 9876, q1val4 = 4567;
     SCPStatus status;
     /* Test queue push. */
@@ -348,5 +343,3 @@ static void SCPTests_testQueueVarious(void)
     status = SCPQueue_delete(q1);
     assert(status == SCPStatus_success);
 }
-#endif
-#endif
