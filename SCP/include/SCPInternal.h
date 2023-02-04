@@ -65,7 +65,7 @@ extern SCPInternalType scp;
 
 #define CLEAR_CONTAINER_FULL(ctnr)                  ((ctnr)->meta &= ~CONTAINER_FULL_MARKER)
 
-#define START_OF_CONTAINER_DATA(queue)              (SCPAddr)((SCPAddr)(queue) + sizeof(SCPContainer))
+#define START_OF_CONTAINER_DATA(ctnr)              (SCPAddr)((SCPAddr)(ctnr) + sizeof(SCPContainer))
 
 #define IS_ADDR_IN_BUFFER_RANGE(addr)               ((((SCPAddr)(addr) >= scp.buffer) && \
                                                     ((SCPAddr)(addr) < &scp.buffer[SCP_TOTAL_BUFFER_SIZE])) ? \
@@ -83,5 +83,6 @@ extern SCPInternalType scp;
 
 SCPContainerId SCP_getNextFreeId(void);
 SCPContainer* SCP_getContainer(const SCPContainerId contId);
+void SCP_freeContainter(const SCPContainerId id);
 
 #endif // SCPINTERNAL_H

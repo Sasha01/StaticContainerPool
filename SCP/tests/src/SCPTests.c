@@ -24,7 +24,7 @@ void SCPTests_run(void)
 
 static void SCPTests_testQueue(void)
 {
-
+    SCP_init();
     SCPTests_testQueueCreate();
     SCPTests_testQueuePushPop();
     SCPTests_testQueueIsEmpty();
@@ -52,7 +52,7 @@ static void SCPTests_testQueueCreate(void)
     assert(q2 != SCP_INVALID);
     q3 = SCPQueue_create(100,8);
     assert(q3 != SCP_INVALID);
-    /* Assuming the size of the buffer is 1000B, this next queue creation is expected to fail due to lack of space. */
+    /* Assuming the size of the buffer is 1000 bytes, this next queue creation is expected to fail due to lack of space. */
     q4 = SCPQueue_create(10,10);
     assert(q4 == SCP_INVALID);
 
@@ -63,6 +63,22 @@ static void SCPTests_testQueueCreate(void)
     assert(status == SCPStatus_success);   
     status = SCPQueue_delete(q1);
     assert(status == SCPStatus_success);   
+
+
+    /* Create the maximum number of containers. */
+    SCPContainerId id;
+    for (id = 0; id < SCP_MAX_NO_OF_CONTAINERS; id++)
+    {
+        q1 = SCPQueue_create(1,1);
+        assert(q1 != SCP_INVALID);
+    }
+
+    q1 = SCPQueue_create(1,1);
+    assert(q1 == SCP_INVALID);
+
+    /* clean-up */
+    SCP_init();
+
 }
 
 static void SCPTests_testQueueDelete(void)
@@ -94,6 +110,19 @@ static void SCPTests_testQueueDelete(void)
     /* now delete the first one, it should work now. */
     status = SCPQueue_delete(q1);
     assert(status == SCPStatus_success);
+
+    /* Now create multiple queues. Try to delete the first one and re-create it, it should work. */
+    SCPContainerId q3, q4;
+    q1 = SCPQueue_create(3,2);
+    assert(q1 != SCP_INVALID);
+    q2 = SCPQueue_create(3,2);
+    assert(q2 != SCP_INVALID);
+    q3 = SCPQueue_create(100,8);
+    assert(q3 != SCP_INVALID);
+    /* Assuming the size of the buffer is 1000 bytes, this next queue creation is expected to fail due to lack of space. */
+    q4 = SCPQueue_create(10,10);
+    assert(q4 == SCP_INVALID);
+
 }
 
 static void SCPTests_testQueuePushPop(void)

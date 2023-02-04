@@ -69,6 +69,7 @@ SCPStatus SCPQueue_delete(const SCPContainerId id)
             /* set the head and tail as identical so the queue is empty. */
             q->c.q.tail = q->c.q.head;
             scp.nextFree = q;
+            SCP_freeContainter(id);
             status = SCPStatus_success;
         }
         SCP_EXIT_CRITICAL_SECTION();

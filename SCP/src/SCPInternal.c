@@ -37,3 +37,11 @@ SCPContainer* SCP_getContainer(const SCPContainerId contId)
     }
     return cont;
 }
+
+void SCP_freeContainter(const SCPContainerId id)
+{
+    if (id < SCP_MAX_NO_OF_CONTAINERS)
+    {
+        scp.map[id] = SCP_NULL;
+    }
+}
