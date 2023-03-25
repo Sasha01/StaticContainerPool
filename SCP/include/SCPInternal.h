@@ -82,6 +82,9 @@ extern SCPInternalType scp;
 #define GET_CONTAINER_TYPE_MARKER(cntr)             (((cntr)->meta & CONTAINER_TYPE_MASK) >> CONTAINER_TYPE_POS)
 
 
+#define END_OF_CONTAINER_DATA(cntr)    (SCPAddr)(  (SCPAddr)(cntr) + sizeof(SCPContainer) + \
+                                                ((cntr)->maxNoOfElem * (cntr)->sizeOfElem))
+
 SCPContainerId SCP_getNextFreeId(void);
 SCPContainer* SCP_getContainer(const SCPContainerId contId);
 void SCP_freeContainter(const SCPContainerId id);

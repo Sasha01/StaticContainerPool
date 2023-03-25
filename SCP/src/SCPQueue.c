@@ -7,15 +7,12 @@
 
 #define IS_QUEUE_EMPTY(queue)       (((queue)->c.q.head == (queue)->c.q.tail) && !IS_CONTAINER_FULL(queue))
 
-#define END_OF_QUEUE_DATA(queue)    (SCPAddr)(  (SCPAddr)(queue) + sizeof(SCPContainer) + \
-                                                ((queue)->maxNoOfElem * (queue)->sizeOfElem))
-
 #define SET_QUEUE_TYPE_MARKER(queue)  SET_CONTAINER_TYPE_MARKER((queue), (QUEUE_TYPE_MARKER))
 
 #define IS_QUEUE(queue)             (GET_CONTAINER_TYPE_MARKER(queue) == QUEUE_TYPE_MARKER)
 
 #define IS_ADDR_IN_QUEUE_RANGE(addr, queue) (((SCPAddr)(addr) >= START_OF_CONTAINER_DATA(queue)) && \
-                                                ((SCPAddr)(addr) < END_OF_QUEUE_DATA(queue)))
+                                                ((SCPAddr)(addr) < END_OF_CONTAINER_DATA(queue)))
 
 #define IS_QUEUE_VALID(queue)       ((IS_ADDR_IN_BUFFER_RANGE(queue) && \
                                     IS_QUEUE(queue) && \
@@ -61,23 +58,8 @@ SCPStatus SCPQueue_delete(const SCPContainerId id)
     SCPContainer* const q = SCP_getContainer(id);
     if (IS_QUEUE_VALID(q))
     {
-        SCP_ENTER_CRITICAL_SECTION();
-        /* check if it's the last queue created. */
-        if (END_OF_QUEUE_DATA(q) == (SCPAddr)scp.nextFree)
-        {
-            RESET_CONTAINER_METADATA(q);
-            /* set the head and tail as identical so the queue is empty. */
-            q->c.q.tail = q->c.q.head;
-            scp.nextFree = q;
-            SCP_freeContainter(id);
-            status = SCPStatus_success;
-        }
-        else
-        {
-            /* trying to remove a container in the middle of the buffer */
-
-        }
-        SCP_EXIT_CRITICAL_SECTION();
+        SCP_freeContainter(id);
+        status = SCPStatus_success;
     }
     return status;
 }
@@ -91,7 +73,7 @@ SCPStatus SCPQueue_push(const SCPContainerId id, SCPAddr const data)
         memcpy(container->c.q.head, data, container->sizeOfElem);
         // advance the head
         container->c.q.head += container->sizeOfElem;
-        if (container->c.q.head >= END_OF_QUEUE_DATA(container))
+        if (container->c.q.head >= END_OF_CONTAINER_DATA(container))
         {
             container->c.q.head = START_OF_CONTAINER_DATA(container);
         }
@@ -113,7 +95,7 @@ SCPStatus SCPQueue_pop(const SCPContainerId id, SCPAddr data)
         memcpy(data, container->c.q.tail, container->sizeOfElem);
         // advance the tail
         container->c.q.tail += container->sizeOfElem;
-        if (container->c.q.tail >= END_OF_QUEUE_DATA(container))
+        if (container->c.q.tail >= END_OF_CONTAINER_DATA(container))
         {
             container->c.q.tail = START_OF_CONTAINER_DATA(container);
         }
@@ -163,7 +145,7 @@ SCPUWord SCPQueue_getCount(const SCPContainerId id)
     }
     else /* q-> head < q-> tail */
     {
-        noOfElem = ((q->c.q.head - START_OF_CONTAINER_DATA(q)) + (END_OF_QUEUE_DATA(q) - q->c.q.tail)) / q->sizeOfElem;
+        noOfElem = ((q->c.q.head - START_OF_CONTAINER_DATA(q)) + (END_OF_CONTAINER_DATA(q) - q->c.q.tail)) / q->sizeOfElem;
     }
     return noOfElem;
 }
@@ -179,7 +161,7 @@ static SCPContainerId createEmptyQueue(const SCPUWord elem, const SCPUWord size)
         newQueue->c.q.head = (SCPAddr)newQueue + sizeof(SCPContainer);
         newQueue->c.q.tail = newQueue->c.q.head;
         SET_QUEUE_TYPE_MARKER(newQueue);
-        scp.nextFree = (SCPContainer*)END_OF_QUEUE_DATA(scp.nextFree);
+        scp.nextFree = (SCPContainer*)END_OF_CONTAINER_DATA(scp.nextFree);
         scp.map[id] = newQueue;  
     }
     

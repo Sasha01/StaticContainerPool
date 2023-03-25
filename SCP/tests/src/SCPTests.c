@@ -107,19 +107,19 @@ static void SCPTests_testQueueDelete(void)
     status = SCPQueue_delete(SCP_INVALID);
     assert(status == SCPStatus_failed);
 
-    /* create 2 queues, and try to delete the first one. It should fail. */
+    /* create 2 queues, and try to delete the first one. It should succeed. */
     q1 = SCPQueue_create(1, 5);
     SCPContainerId q2 = SCPQueue_create(3, 4);
     assert(q1 != SCP_INVALID);
     assert(q2 != SCP_INVALID);
     status = SCPQueue_delete(q1);
-    assert(status == SCPStatus_failed);
+    assert(status == SCPStatus_success);
     /* now delete the second one, it should work. */
     status = SCPQueue_delete(q2);
     assert(status == SCPStatus_success);
-    /* now delete the first one, it should work now. */
+    /* now delete the first one, it should fail because it was deleted before. */
     status = SCPQueue_delete(q1);
-    assert(status == SCPStatus_success);
+    assert(status == SCPStatus_failed);
 
     /* Now create multiple queues. Try to delete the first one and re-create it, it should work. */
     SCPContainerId q3, q4;
