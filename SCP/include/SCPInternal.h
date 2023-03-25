@@ -12,8 +12,6 @@
 typedef struct  {
     SCPAddr tail;           /**< Pointer to the tail of the queue.*/
     SCPAddr head;           /**< Pointer to the head of the queue.*/
-    SCPUWord maxNoOfElem;   /**< Maximum number of elements in the queue.*/
-    SCPUWord sizeOfElem;    /**< Size of an element in bytes.*/
 }SCPQueue;
 #endif  /* SCP_ENABLE_API_QUEUE */
 
@@ -24,8 +22,6 @@ typedef struct  {
  */
 typedef struct  {
     SCPAddr top;            /**< Pointer to the top of the stack.*/
-    SCPUWord maxNoOfElem;   /**< Maximum number of elements in the stack.*/
-    SCPUWord sizeOfElem;    /**< Size of an element in bytes.*/
 }SCPStack;
 #endif /* SCP_ENABLE_API_STACK */
 
@@ -43,6 +39,8 @@ typedef struct {
         SCPStack s;         /**< Representation of the stack. */
         #endif /* SCP_ENABLE_API_STACK */
     }c;                     /**< Representation of the container. */
+    SCPUWord maxNoOfElem;   /**< Maximum number of elements in the queue.*/
+    SCPUWord sizeOfElem;    /**< Size of an element in bytes.*/
     SCPUWord meta;          /**< Meta information. Reserved for future use.*/
 }SCPContainer;
 
