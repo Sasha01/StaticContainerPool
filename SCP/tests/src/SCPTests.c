@@ -66,15 +66,25 @@ static void SCPTests_testQueueCreate(void)
 
 
     /* Create the maximum number of containers. */
-    SCPContainerId id;
+    SCPContainerId ids[SCP_MAX_NO_OF_CONTAINERS] = {0};
+    SCPUWord id;
+
     for (id = 0; id < SCP_MAX_NO_OF_CONTAINERS; id++)
     {
-        q1 = SCPQueue_create(1,1);
-        assert(q1 != SCP_INVALID);
+        ids[id] = SCPQueue_create(10,1);
+        assert(ids[id] != SCP_INVALID);
     }
-
+    /* Try to create one more. It should fail. */
     q1 = SCPQueue_create(1,1);
     assert(q1 == SCP_INVALID);
+
+    /* Now delete a random queue and try to re-create it. It should work. */
+    /*
+    status = SCPQueue_delete(ids[4]);
+    assert(status == SCPStatus_success);
+    ids[4] = SCPQueue_create(10, 1);
+    assert(ids[4] != SCP_INVALID);
+    */
 
     /* clean-up */
     SCP_init();

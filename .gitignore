@@ -1,5 +1,7 @@
 # SCP defined
 build
+.cache
+**/.$SCP*
 
 # Prerequisites
 *.d

@@ -26,14 +26,9 @@ SCPContainerId SCP_getNextFreeId(void)
 SCPContainer* SCP_getContainer(const SCPContainerId contId)
 {
     SCPContainer* cont = SCP_NULL;
-    SCPContainerId id;
-    for (id = 0; id < SCP_MAX_NO_OF_CONTAINERS; id++)
+    if ((contId < SCP_MAX_NO_OF_CONTAINERS) && (IS_ADDR_IN_BUFFER_RANGE(scp.map[contId])))
     {
-        if ((id == contId) && (IS_ADDR_IN_BUFFER_RANGE(scp.map[id])))
-        {
-            cont = scp.map[id];
-            break;
-        }
+        cont = scp.map[contId];
     }
     return cont;
 }
@@ -42,6 +37,7 @@ void SCP_freeContainter(const SCPContainerId id)
 {
     if (id < SCP_MAX_NO_OF_CONTAINERS)
     {
+        SET_CONTAINER_TYPE_MARKER(scp.map[id], CONTAINER_TYPE_NONE);
         scp.map[id] = SCP_NULL;
     }
 }

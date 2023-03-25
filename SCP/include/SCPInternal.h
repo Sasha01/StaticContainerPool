@@ -10,10 +10,10 @@
  * 
  */
 typedef struct  {
-    SCPUWord maxNoOfElem;   /**< Maximum number of elements in the queue.*/
-    SCPUWord sizeOfElem;    /**< Size of an element in bytes.*/
     SCPAddr tail;           /**< Pointer to the tail of the queue.*/
     SCPAddr head;           /**< Pointer to the head of the queue.*/
+    SCPUWord maxNoOfElem;   /**< Maximum number of elements in the queue.*/
+    SCPUWord sizeOfElem;    /**< Size of an element in bytes.*/
 }SCPQueue;
 #endif  /* SCP_ENABLE_API_QUEUE */
 
@@ -23,9 +23,9 @@ typedef struct  {
  * 
  */
 typedef struct  {
+    SCPAddr top;            /**< Pointer to the top of the stack.*/
     SCPUWord maxNoOfElem;   /**< Maximum number of elements in the stack.*/
     SCPUWord sizeOfElem;    /**< Size of an element in bytes.*/
-    SCPAddr top;           /**< Pointer to the top of the stack.*/
 }SCPStack;
 #endif /* SCP_ENABLE_API_STACK */
 
@@ -34,7 +34,6 @@ typedef struct  {
  * 
  */
 typedef struct {
-    SCPUWord meta;          /**< Meta information. Reserved for future use.*/
     union {
         #if SCP_ENABLE_API_QUEUE
         SCPQueue q;         /**< Representation of the queue. */
@@ -44,6 +43,7 @@ typedef struct {
         SCPStack s;         /**< Representation of the stack. */
         #endif /* SCP_ENABLE_API_STACK */
     }c;                     /**< Representation of the container. */
+    SCPUWord meta;          /**< Meta information. Reserved for future use.*/
 }SCPContainer;
 
 typedef struct {
@@ -56,6 +56,9 @@ extern SCPInternalType scp;
 
 #define CONTAINER_TYPE_MASK (0xFF)
 #define CONTAINER_TYPE_POS  (1)
+
+#define CONTAINER_TYPE_EMPTY    (0xFF)
+#define CONTAINER_TYPE_NONE     (0x00)
 
 #define CONTAINER_FULL_MARKER (1)
 
