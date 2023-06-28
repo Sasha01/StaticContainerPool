@@ -55,7 +55,7 @@ extern SCPInternalType scp;
 #define CONTAINER_TYPE_MASK (0xFF)
 #define CONTAINER_TYPE_POS  (1)
 
-#define CONTAINER_TYPE_EMPTY    (0xFF)
+#define CONTAINER_TYPE_FREE    (0xFF)
 #define CONTAINER_TYPE_NONE     (0x00)
 
 #define CONTAINER_FULL_MARKER (1)
@@ -79,12 +79,16 @@ extern SCPInternalType scp;
 #define SET_CONTAINER_TYPE_MARKER(cntr, type)       REMOVE_CONTAINER_TYPE_MARKER(cntr); \
                                                     ((cntr)->meta |= (((type) & CONTAINER_TYPE_MASK) << CONTAINER_TYPE_POS))
 
-#define GET_CONTAINER_TYPE_MARKER(cntr)             (((cntr)->meta & CONTAINER_TYPE_MASK) >> CONTAINER_TYPE_POS)
+#define GET_CONTAINER_TYPE_MARKER(cntr)             (((cntr)->meta >> CONTAINER_TYPE_POS) & CONTAINER_TYPE_MASK)
+
+#define IS_CONTAINER_FREE(cntr)                     (GET_CONTAINER_TYPE_MARKER(cntr) == CONTAINER_TYPE_FREE)
+
+#define CONTAINER_DATA_SIZE(cntr)                   ((cntr)->maxNoOfElem * (cntr)->sizeOfElem)
+
+#define END_OF_CONTAINER_DATA(cntr)                 (SCPAddr)((SCPAddr)(cntr) + sizeof(SCPContainer) + CONTAINER_DATA_SIZE(cntr))
 
 
-#define END_OF_CONTAINER_DATA(cntr)    (SCPAddr)(  (SCPAddr)(cntr) + sizeof(SCPContainer) + \
-                                                ((cntr)->maxNoOfElem * (cntr)->sizeOfElem))
-
+SCPContainerId SCP_getFreeContainterId(const SCPUWord neededSize);
 SCPContainerId SCP_getNextFreeId(void);
 SCPContainer* SCP_getContainer(const SCPContainerId contId);
 void SCP_freeContainter(const SCPContainerId id);

@@ -79,12 +79,10 @@ static void SCPTests_testQueueCreate(void)
     assert(q1 == SCP_INVALID);
 
     /* Now delete a random queue and try to re-create it. It should work. */
-    /*
     status = SCPQueue_delete(ids[4]);
     assert(status == SCPStatus_success);
     ids[4] = SCPQueue_create(10, 1);
     assert(ids[4] != SCP_INVALID);
-    */
 
     /* clean-up */
     SCP_init();
