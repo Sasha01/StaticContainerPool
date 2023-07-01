@@ -5,8 +5,6 @@ SCRIPT=$(readlink -f "$0")
 # Absolute path this script is in, thus /home/user/bin
 SCP_ROOT_DIR=$(dirname "$SCRIPT")/..
 
-# python3 runGcov.py $SCP_ROOT_DIR
 export PATH=$PATH:/home/sasha/.local/bin
 cd $SCP_ROOT_DIR/build
 gcovr -r ./.. --html-details -o cov.html --html-self-contained
-#rm -rf $SCP_ROOT_DIR/temp
