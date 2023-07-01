@@ -15,9 +15,10 @@ This graph shows which files directly or indirectly include this file\+:\nopageb
 \doxysubsection*{Macros}
 \begin{DoxyCompactItemize}
 \item 
-\mbox{\Hypertarget{SCPCfg_8h_a517e84ce6cd50409e5b2aa9ce4bfe19b}\label{SCPCfg_8h_a517e84ce6cd50409e5b2aa9ce4bfe19b}} 
 \#define \mbox{\hyperlink{SCPCfg_8h_a517e84ce6cd50409e5b2aa9ce4bfe19b}{SCP\+\_\+\+TOTAL\+\_\+\+BUFFER\+\_\+\+SIZE}}~1000u
 \begin{DoxyCompactList}\small\item\em The total size of the static pool used to create containers. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{SCPCfg_8h_aa58565bc9b65ba184da0a7c25b55d069}{SCP\+\_\+\+MAX\+\_\+\+NO\+\_\+\+OF\+\_\+\+CONTAINERS}}~10u
+\begin{DoxyCompactList}\small\item\em Maximum number of containers that can be created. Sort of related to \mbox{\hyperlink{SCPCfg_8h_a517e84ce6cd50409e5b2aa9ce4bfe19b}{SCP\+\_\+\+TOTAL\+\_\+\+BUFFER\+\_\+\+SIZE}} but it\textquotesingle{}s the user\textquotesingle{}s job to align these two. \end{DoxyCompactList}\item 
 \mbox{\Hypertarget{SCPCfg_8h_a610c7569e4985578a02c40fd12adac59}\label{SCPCfg_8h_a610c7569e4985578a02c40fd12adac59}} 
 \#define \mbox{\hyperlink{SCPCfg_8h_a610c7569e4985578a02c40fd12adac59}{SCP\+\_\+\+ENTER\+\_\+\+CRITICAL\+\_\+\+SECTION}}()
 \begin{DoxyCompactList}\small\item\em Macro for entering a critical section. This should prevent the current task from being preempted while executing in a critical section. To be defined by user. \end{DoxyCompactList}\item 
@@ -47,3 +48,32 @@ Sorin Bugarin (\href{mailto:sorin.bugarin@gmail.com}{\texttt{ sorin.\+bugarin@gm
 \begin{DoxyCopyright}{Copyright}
 Copyright (c) 2023 
 \end{DoxyCopyright}
+
+
+\doxysubsection{Macro Definition Documentation}
+\mbox{\Hypertarget{SCPCfg_8h_aa58565bc9b65ba184da0a7c25b55d069}\label{SCPCfg_8h_aa58565bc9b65ba184da0a7c25b55d069}} 
+\index{SCPCfg.h@{SCPCfg.h}!SCP\_MAX\_NO\_OF\_CONTAINERS@{SCP\_MAX\_NO\_OF\_CONTAINERS}}
+\index{SCP\_MAX\_NO\_OF\_CONTAINERS@{SCP\_MAX\_NO\_OF\_CONTAINERS}!SCPCfg.h@{SCPCfg.h}}
+\doxysubsubsection{\texorpdfstring{SCP\_MAX\_NO\_OF\_CONTAINERS}{SCP\_MAX\_NO\_OF\_CONTAINERS}}
+{\footnotesize\ttfamily \#define SCP\+\_\+\+MAX\+\_\+\+NO\+\_\+\+OF\+\_\+\+CONTAINERS~10u}
+
+
+
+Maximum number of containers that can be created. Sort of related to \mbox{\hyperlink{SCPCfg_8h_a517e84ce6cd50409e5b2aa9ce4bfe19b}{SCP\+\_\+\+TOTAL\+\_\+\+BUFFER\+\_\+\+SIZE}} but it\textquotesingle{}s the user\textquotesingle{}s job to align these two. 
+
+\begin{DoxyNote}{Note}
+For testing purposes this value was set to 10u. 
+\end{DoxyNote}
+\mbox{\Hypertarget{SCPCfg_8h_a517e84ce6cd50409e5b2aa9ce4bfe19b}\label{SCPCfg_8h_a517e84ce6cd50409e5b2aa9ce4bfe19b}} 
+\index{SCPCfg.h@{SCPCfg.h}!SCP\_TOTAL\_BUFFER\_SIZE@{SCP\_TOTAL\_BUFFER\_SIZE}}
+\index{SCP\_TOTAL\_BUFFER\_SIZE@{SCP\_TOTAL\_BUFFER\_SIZE}!SCPCfg.h@{SCPCfg.h}}
+\doxysubsubsection{\texorpdfstring{SCP\_TOTAL\_BUFFER\_SIZE}{SCP\_TOTAL\_BUFFER\_SIZE}}
+{\footnotesize\ttfamily \#define SCP\+\_\+\+TOTAL\+\_\+\+BUFFER\+\_\+\+SIZE~1000u}
+
+
+
+The total size of the static pool used to create containers. 
+
+\begin{DoxyNote}{Note}
+For testing purposes this value was set to 1000u. 
+\end{DoxyNote}

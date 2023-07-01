@@ -1,3 +1,5 @@
+
+#include <string.h>
 #include "SCP.h"
 #include "SCPInternal.h"
 
@@ -7,3 +9,10 @@
  * 
  */
 SCPInternalType scp;
+
+void SCP_init(void)
+{
+    memset(scp.buffer, 0x00, sizeof(scp.buffer));
+    memset(scp.map, 0x00, sizeof(scp.map));
+    scp.nextFree = (SCPContainer*)scp.buffer;
+}
