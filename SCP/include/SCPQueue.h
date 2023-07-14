@@ -22,7 +22,7 @@
  * @param sizeOfElem - Size of one element in bytes.
  * @return SCPContainerId - SCP_INVALID if failed
  */
-SCPContainerId SCPQueue_create(const SCPUWord noOfElem, const SCPUWord sizeOfElem);
+SCPContainerId SCPQueue_create(const SCPUShort noOfElem, const SCPUShort sizeOfElem);
 
 /**
  * @brief Deletes the queue.

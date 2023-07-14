@@ -39,9 +39,10 @@ typedef struct {
         SCPStack s;         /**< Representation of the stack. */
         #endif /* SCP_ENABLE_API_STACK */
     }c;                     /**< Representation of the container. */
-    SCPUWord maxNoOfElem;   /**< Maximum number of elements in the queue.*/
-    SCPUWord sizeOfElem;    /**< Size of an element in bytes.*/
-    SCPUWord meta;          /**< Meta information. Reserved for future use.*/
+    SCPUShort maxNoOfElem;   /**< Maximum number of elements in the queue.*/
+    SCPUShort sizeOfElem;    /**< Size of an element in bytes.*/
+    SCPUShort noOfElem;
+    SCPUShort meta;          /**< Meta information. Reserved for future use.*/
 }SCPContainer;
 
 typedef struct {
@@ -57,14 +58,6 @@ extern SCPInternalType scp;
 
 #define CONTAINER_TYPE_FREE    (0xFF)
 #define CONTAINER_TYPE_NONE     (0x00)
-
-#define CONTAINER_FULL_MARKER (1)
-
-#define IS_CONTAINER_FULL(ctnr)                     (((ctnr)->meta & CONTAINER_FULL_MARKER) ? SCPBool_true : SCPBool_false)
-
-#define SET_CONTAINER_FULL(ctnr)                    ((ctnr)->meta |= CONTAINER_FULL_MARKER)
-
-#define CLEAR_CONTAINER_FULL(ctnr)                  ((ctnr)->meta &= ~CONTAINER_FULL_MARKER)
 
 #define START_OF_CONTAINER_DATA(ctnr)              (SCPAddr)((SCPAddr)(ctnr) + sizeof(SCPContainer))
 
@@ -87,12 +80,11 @@ extern SCPInternalType scp;
 
 #define END_OF_CONTAINER_DATA(cntr)                 (SCPAddr)((SCPAddr)(cntr) + sizeof(SCPContainer) + CONTAINER_DATA_SIZE(cntr))
 
-typedef void (*SCPInitContainerFn)(SCPContainer* const container, const SCPUWord elem, const SCPUWord size);
+typedef void (*SCPInitContainerFn)(SCPContainer* const container, const SCPUShort elem, const SCPUShort size);
 
-SCPContainerId SCP_getFreeContainterId(const SCPUWord neededSize);
 SCPContainerId SCP_getNextFreeId(void);
 SCPContainer* SCP_getContainer(const SCPContainerId contId);
 void SCP_freeContainter(const SCPContainerId id);
-SCPContainerId SCP_createContainer(const SCPUWord noOfElem, const SCPUWord sizeOfElem, const SCPInitContainerFn initFn);
+SCPContainerId SCP_createContainer(const SCPUShort noOfElem, const SCPUShort sizeOfElem, const SCPInitContainerFn initFn);
 
 #endif // SCPINTERNAL_H

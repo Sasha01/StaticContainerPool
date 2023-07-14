@@ -19,6 +19,7 @@
 
 typedef unsigned char SCPUByte;     /**< Type for one unsigned byte. */
 typedef unsigned int SCPUWord;      /**< Type for one unsigned word. At least 4 bytes.*/
+typedef unsigned short int SCPUShort;   /**< Type for one unsigned short. At least 2 bytes.*/
 typedef unsigned char* SCPAddr;     /**< Type for addresses. */
 typedef SCPUWord SCPContainerId; /**< Type used by clients to identify the working containter. */
 

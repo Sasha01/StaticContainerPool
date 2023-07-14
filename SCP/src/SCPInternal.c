@@ -3,7 +3,7 @@
 #include "SCPInternal.h"
 #include <string.h>
 
-SCPContainerId SCP_getFreeContainterId(const SCPUWord neededSize)
+static SCPContainerId getFreeContainterId(const SCPUWord neededSize)
 {
     /*
     Search for an empty container that can fit the data size required.
@@ -104,7 +104,7 @@ void SCP_freeContainter(const SCPContainerId id)
     }
 }
 
-SCPContainerId SCP_createContainer(const SCPUWord noOfElem, const SCPUWord sizeOfElem, const SCPInitContainerFn initFn)
+SCPContainerId SCP_createContainer(const SCPUShort noOfElem, const SCPUShort sizeOfElem, const SCPInitContainerFn initFn)
 {
     SCPContainerId id = SCP_INVALID;
     if ((noOfElem > 0) && (sizeOfElem > 0))
@@ -113,7 +113,7 @@ SCPContainerId SCP_createContainer(const SCPUWord noOfElem, const SCPUWord sizeO
 
         /* first, check if there is an already created container that is freed and can fit the data */
 
-        id = SCP_getFreeContainterId(noOfElem * sizeOfElem);
+        id = getFreeContainterId(noOfElem * sizeOfElem);
         if (id != SCP_INVALID)
         {
             SCPContainer* const q = SCP_getContainer(id);
@@ -121,10 +121,12 @@ SCPContainerId SCP_createContainer(const SCPUWord noOfElem, const SCPUWord sizeO
             // this will lead to fragmented (lost) buffer space if the new container size is less than the previous container size.
             /*
             TODO: need to find a way to deal with this...
-            Idea: In SCP_getFreeContainterId() only return if the found empty container size is equal to the new container size, OR
+            Idea: In getFreeContainterId() only return if the found empty container size is equal to the new container size, OR
             if there is enough space to create a new free container with at least 1 byte of data.
             This way we could implement a defragment function that will run at low CPU load and bring all the free containers to the
             end of the buffer doing safe memmove. This will potentially take a long time, and it needs to be done in a critical section.
+            Idea 2: each call to the defragment function will move ONE empty container. If one container was moved, it will return IN_PROGRESS,
+            if no empty conainer was found return SUCCESS.
             */
         }
         else
