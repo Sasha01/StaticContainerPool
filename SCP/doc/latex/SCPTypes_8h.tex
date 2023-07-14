@@ -20,20 +20,14 @@ This graph shows which files directly or indirectly include this file\+:\nopageb
 \includegraphics[width=187pt]{SCPTypes_8h__dep__incl}
 \end{center}
 \end{figure}
-\doxysubsection*{Data Structures}
-\begin{DoxyCompactItemize}
-\item 
-struct \mbox{\hyperlink{structSCPQueue}{SCPQueue}}
-\begin{DoxyCompactList}\small\item\em Type that describes a queue. Only for internal use. \end{DoxyCompactList}\item 
-struct \mbox{\hyperlink{structSCPStack}{SCPStack}}
-\begin{DoxyCompactList}\small\item\em Type that describes a stack. Only for internal use. \end{DoxyCompactList}\item 
-struct \mbox{\hyperlink{structSCPContainer}{SCPContainer}}
-\begin{DoxyCompactList}\small\item\em Type that describes a generic container. Only for internal use. \end{DoxyCompactList}\end{DoxyCompactItemize}
 \doxysubsection*{Macros}
 \begin{DoxyCompactItemize}
 \item 
 \mbox{\Hypertarget{SCPTypes_8h_a16779456e16f03322466abd5304303b4}\label{SCPTypes_8h_a16779456e16f03322466abd5304303b4}} 
 \#define {\bfseries SCP\+\_\+\+NULL}~0
+\item 
+\mbox{\Hypertarget{SCPTypes_8h_af8d3d6c971405f5c9e4e7f9bda312e40}\label{SCPTypes_8h_af8d3d6c971405f5c9e4e7f9bda312e40}} 
+\#define {\bfseries SCP\+\_\+\+INVALID}~(0x\+FFFFFFFFu)
 \end{DoxyCompactItemize}
 \doxysubsection*{Typedefs}
 \begin{DoxyCompactItemize}
@@ -42,7 +36,11 @@ typedef unsigned char \mbox{\hyperlink{SCPTypes_8h_a8376c5829fcaeeefc03720dd9e1d
 \item 
 typedef unsigned int \mbox{\hyperlink{SCPTypes_8h_ab97001cb6ab60a3210ce8a84e5951d92}{SCPUWord}}
 \item 
+typedef unsigned short int \mbox{\hyperlink{SCPTypes_8h_a3fdaf8d78000b8244ae3aea33983543c}{SCPUShort}}
+\item 
 typedef unsigned char $\ast$ \mbox{\hyperlink{SCPTypes_8h_a7cee91eb54d69746afbe974f2190a075}{SCPAddr}}
+\item 
+typedef \mbox{\hyperlink{SCPTypes_8h_ab97001cb6ab60a3210ce8a84e5951d92}{SCPUWord}} \mbox{\hyperlink{SCPTypes_8h_aa431591846fb9c7ab4739c70a7b89b9d}{SCPContainer\+Id}}
 \end{DoxyCompactItemize}
 \doxysubsection*{Enumerations}
 \begin{DoxyCompactItemize}
@@ -83,13 +81,25 @@ Copyright (c) 2023
 \doxysubsubsection{\texorpdfstring{SCPAddr}{SCPAddr}}
 {\footnotesize\ttfamily typedef unsigned char$\ast$ \mbox{\hyperlink{SCPTypes_8h_a7cee91eb54d69746afbe974f2190a075}{SCPAddr}}}
 
-Type for addresses. \mbox{\Hypertarget{SCPTypes_8h_a8376c5829fcaeeefc03720dd9e1d7b0a}\label{SCPTypes_8h_a8376c5829fcaeeefc03720dd9e1d7b0a}} 
+Type for addresses. \mbox{\Hypertarget{SCPTypes_8h_aa431591846fb9c7ab4739c70a7b89b9d}\label{SCPTypes_8h_aa431591846fb9c7ab4739c70a7b89b9d}} 
+\index{SCPTypes.h@{SCPTypes.h}!SCPContainerId@{SCPContainerId}}
+\index{SCPContainerId@{SCPContainerId}!SCPTypes.h@{SCPTypes.h}}
+\doxysubsubsection{\texorpdfstring{SCPContainerId}{SCPContainerId}}
+{\footnotesize\ttfamily typedef \mbox{\hyperlink{SCPTypes_8h_ab97001cb6ab60a3210ce8a84e5951d92}{SCPUWord}} \mbox{\hyperlink{SCPTypes_8h_aa431591846fb9c7ab4739c70a7b89b9d}{SCPContainer\+Id}}}
+
+Type used by clients to identify the working containter. \mbox{\Hypertarget{SCPTypes_8h_a8376c5829fcaeeefc03720dd9e1d7b0a}\label{SCPTypes_8h_a8376c5829fcaeeefc03720dd9e1d7b0a}} 
 \index{SCPTypes.h@{SCPTypes.h}!SCPUByte@{SCPUByte}}
 \index{SCPUByte@{SCPUByte}!SCPTypes.h@{SCPTypes.h}}
 \doxysubsubsection{\texorpdfstring{SCPUByte}{SCPUByte}}
 {\footnotesize\ttfamily typedef unsigned char \mbox{\hyperlink{SCPTypes_8h_a8376c5829fcaeeefc03720dd9e1d7b0a}{SCPUByte}}}
 
-Type for one unsigned byte. \mbox{\Hypertarget{SCPTypes_8h_ab97001cb6ab60a3210ce8a84e5951d92}\label{SCPTypes_8h_ab97001cb6ab60a3210ce8a84e5951d92}} 
+Type for one unsigned byte. \mbox{\Hypertarget{SCPTypes_8h_a3fdaf8d78000b8244ae3aea33983543c}\label{SCPTypes_8h_a3fdaf8d78000b8244ae3aea33983543c}} 
+\index{SCPTypes.h@{SCPTypes.h}!SCPUShort@{SCPUShort}}
+\index{SCPUShort@{SCPUShort}!SCPTypes.h@{SCPTypes.h}}
+\doxysubsubsection{\texorpdfstring{SCPUShort}{SCPUShort}}
+{\footnotesize\ttfamily typedef unsigned short int \mbox{\hyperlink{SCPTypes_8h_a3fdaf8d78000b8244ae3aea33983543c}{SCPUShort}}}
+
+Type for one unsigned short. At least 2 bytes. \mbox{\Hypertarget{SCPTypes_8h_ab97001cb6ab60a3210ce8a84e5951d92}\label{SCPTypes_8h_ab97001cb6ab60a3210ce8a84e5951d92}} 
 \index{SCPTypes.h@{SCPTypes.h}!SCPUWord@{SCPUWord}}
 \index{SCPUWord@{SCPUWord}!SCPTypes.h@{SCPTypes.h}}
 \doxysubsubsection{\texorpdfstring{SCPUWord}{SCPUWord}}

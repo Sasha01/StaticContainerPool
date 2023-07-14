@@ -26,6 +26,21 @@ typedef struct  {
 #endif /* SCP_ENABLE_API_STACK */
 
 /**
+ * @brief Enumeration that describes the type of the container.
+ * 
+ */
+typedef enum {
+    SCPContainerType_none = 0,
+#if SCP_ENABLE_API_QUEUE
+    SCPContainerType_queue,
+#endif
+#if SCP_ENABLE_API_STACK
+    SCPContainerType_stack,
+#endif
+    SCPContainerType_free = 0xFF
+}SCPContainerType;
+
+/**
  * @brief Type that describes a generic container. Only for internal use.
  * 
  */
@@ -41,8 +56,9 @@ typedef struct {
     }c;                     /**< Representation of the container. */
     SCPUShort maxNoOfElem;   /**< Maximum number of elements in the queue.*/
     SCPUShort sizeOfElem;    /**< Size of an element in bytes.*/
-    SCPUShort noOfElem;
-    SCPUShort meta;          /**< Meta information. Reserved for future use.*/
+    SCPUShort noOfElem;      /**< Number of elements currently in the container.*/
+    SCPContainerType type;   /**< Represents the type of the container.*/
+    SCPBool blocked;         /**< Flag used for synchronization. */
 }SCPContainer;
 
 typedef struct {
@@ -53,28 +69,11 @@ typedef struct {
 
 extern SCPInternalType scp;
 
-#define CONTAINER_TYPE_MASK (0xFF)
-#define CONTAINER_TYPE_POS  (1)
-
-#define CONTAINER_TYPE_FREE    (0xFF)
-#define CONTAINER_TYPE_NONE     (0x00)
-
 #define START_OF_CONTAINER_DATA(ctnr)              (SCPAddr)((SCPAddr)(ctnr) + sizeof(SCPContainer))
 
 #define IS_ADDR_IN_BUFFER_RANGE(addr)               ((((SCPAddr)(addr) >= scp.buffer) && \
                                                     ((SCPAddr)(addr) < &scp.buffer[SCP_TOTAL_BUFFER_SIZE])) ? \
                                                     SCPBool_true : SCPBool_false)
-
-#define RESET_CONTAINER_METADATA(cntr)              ((cntr)->meta = 0)
-
-#define REMOVE_CONTAINER_TYPE_MARKER(cntr)          ((cntr)->meta &= ~(CONTAINER_TYPE_MASK << CONTAINER_TYPE_POS))
-
-#define SET_CONTAINER_TYPE_MARKER(cntr, type)       REMOVE_CONTAINER_TYPE_MARKER(cntr); \
-                                                    ((cntr)->meta |= (((type) & CONTAINER_TYPE_MASK) << CONTAINER_TYPE_POS))
-
-#define GET_CONTAINER_TYPE_MARKER(cntr)             (((cntr)->meta >> CONTAINER_TYPE_POS) & CONTAINER_TYPE_MASK)
-
-#define IS_CONTAINER_FREE(cntr)                     (GET_CONTAINER_TYPE_MARKER(cntr) == CONTAINER_TYPE_FREE)
 
 #define CONTAINER_DATA_SIZE(cntr)                   ((cntr)->maxNoOfElem * (cntr)->sizeOfElem)
 

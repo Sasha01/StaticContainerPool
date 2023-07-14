@@ -3,21 +3,16 @@
 #include "SCPInternal.h"
 #include "SCPQueue.h"
 
-#define QUEUE_TYPE_MARKER (0x12)
-
-#define SET_QUEUE_TYPE_MARKER(queue)  SET_CONTAINER_TYPE_MARKER((queue), (QUEUE_TYPE_MARKER))
-
-#define IS_QUEUE(queue)             (GET_CONTAINER_TYPE_MARKER(queue) == QUEUE_TYPE_MARKER)
 
 #define IS_ADDR_IN_QUEUE_RANGE(addr, queue) (((SCPAddr)(addr) >= START_OF_CONTAINER_DATA(queue)) && \
                                                 ((SCPAddr)(addr) < END_OF_CONTAINER_DATA(queue)))
 
-#define IS_QUEUE_VALID(queue)       ((IS_ADDR_IN_BUFFER_RANGE(queue) && \
-                                    IS_QUEUE(queue) && \
+#define IS_QUEUE_VALID(queue)       (IS_ADDR_IN_BUFFER_RANGE(queue) && \
+                                    ((queue)->type == SCPContainerType_queue) && \
                                     IS_ADDR_IN_QUEUE_RANGE((queue)->c.q.head, (queue)) && \
                                     IS_ADDR_IN_QUEUE_RANGE((queue)->c.q.tail, (queue)) && \
                                     ((queue)->maxNoOfElem > 0) && \
-                                    ((queue)->sizeOfElem > 0)))
+                                    ((queue)->sizeOfElem > 0))
 
 
 static void initNewQueue(SCPContainer* const newQueue, const SCPUShort elem, const SCPUShort size);
@@ -117,5 +112,5 @@ static void initNewQueue(SCPContainer* const newQueue, const SCPUShort elem, con
     newQueue->noOfElem = 0;
     newQueue->c.q.head = (SCPAddr)newQueue + sizeof(SCPContainer);
     newQueue->c.q.tail = newQueue->c.q.head;
-    SET_QUEUE_TYPE_MARKER(newQueue);
+    newQueue->type = SCPContainerType_queue;
 }

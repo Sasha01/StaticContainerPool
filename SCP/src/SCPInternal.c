@@ -20,7 +20,7 @@ static SCPContainerId getFreeContainterId(const SCPUWord neededSize)
             /* reached the end of the created containers. Stop. No container found... */
             break;
         }
-        else if ((IS_CONTAINER_FREE(scp.map[it])) && (CONTAINER_DATA_SIZE(scp.map[it]) >= neededSize))
+        else if ((scp.map[it]->type == SCPContainerType_free) && (CONTAINER_DATA_SIZE(scp.map[it]) >= neededSize))
         {
             if (minimumAcceptableSize > CONTAINER_DATA_SIZE(scp.map[it]))
             {
@@ -75,7 +75,6 @@ void SCP_freeContainter(const SCPContainerId id)
         SCP_ENTER_CRITICAL_SECTION();
         SCPContainer* const cntr = scp.map[id];
 
-        RESET_CONTAINER_METADATA(cntr);
         memset(&cntr->c, 0x00, sizeof(cntr->c));
 
         /* check if it's the last queue created. */
@@ -86,7 +85,6 @@ void SCP_freeContainter(const SCPContainerId id)
             and set the id in the map to NULL;
              */
             scp.nextFree = cntr;
-            SET_CONTAINER_TYPE_MARKER(cntr, CONTAINER_TYPE_NONE);
             scp.map[id] = SCP_NULL;
         }
         else
@@ -97,7 +95,7 @@ void SCP_freeContainter(const SCPContainerId id)
             the container will be represented as empty, so the space can be 
             re-allocated later.
             */
-            SET_CONTAINER_TYPE_MARKER(cntr, CONTAINER_TYPE_FREE);
+            cntr->type = SCPContainerType_free;
 
         }
         SCP_EXIT_CRITICAL_SECTION();
