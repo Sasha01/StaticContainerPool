@@ -87,10 +87,12 @@ extern SCPInternalType scp;
 
 #define END_OF_CONTAINER_DATA(cntr)                 (SCPAddr)((SCPAddr)(cntr) + sizeof(SCPContainer) + CONTAINER_DATA_SIZE(cntr))
 
+typedef void (*SCPInitContainerFn)(SCPContainer* const container, const SCPUWord elem, const SCPUWord size);
 
 SCPContainerId SCP_getFreeContainterId(const SCPUWord neededSize);
 SCPContainerId SCP_getNextFreeId(void);
 SCPContainer* SCP_getContainer(const SCPContainerId contId);
 void SCP_freeContainter(const SCPContainerId id);
+SCPContainerId SCP_createContainer(const SCPUWord noOfElem, const SCPUWord sizeOfElem, const SCPInitContainerFn initFn);
 
 #endif // SCPINTERNAL_H

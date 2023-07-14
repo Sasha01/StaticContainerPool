@@ -22,54 +22,11 @@
                                     ((queue)->sizeOfElem > 0)))
 
 
-static void createNewQueue(SCPContainer* const newQueue, const SCPUWord elem, const SCPUWord size);
+static void initNewQueue(SCPContainer* const newQueue, const SCPUWord elem, const SCPUWord size);
 
 SCPContainerId SCPQueue_create(const SCPUWord noOfElem, const SCPUWord sizeOfElem)
-{
-    SCPContainerId id = SCP_INVALID;
-    if ((noOfElem > 0) && (sizeOfElem > 0))
-    {
-        SCP_ENTER_CRITICAL_SECTION();
-
-        /* first, check if there is an already created container that is freed and can fit the data */
-
-        id = SCP_getFreeContainterId(noOfElem * sizeOfElem);
-        if (id != SCP_INVALID)
-        {
-            SCPContainer* const q = SCP_getContainer(id);
-            createNewQueue(q, noOfElem, sizeOfElem);
-            // this will lead to fragmented (lost) buffer space if the new container size is less than the previous container size.
-            /*
-            TODO: need to find a way to deal with this...
-            Idea: In SCP_getFreeContainterId() only return if the found empty container size is equal to the new container size, OR
-            if there is enough space to create a new free container with at least 1 byte of data.
-            This way we could implement a defragment function that will run at low CPU load and bring all the free containers to the
-            end of the buffer doing safe memmove. This will potentially take a long time, and it needs to be done in a critical section.
-            */
-        }
-        else
-        {
-            /* no free container found, check if there is enough space in the buffer to create a new one. */
-            /* check the free space in the buffer */
-            SCPUWord neededSpace = sizeof(SCPContainer) + (noOfElem * sizeOfElem);
-            SCPUWord freeSpace = SCP_TOTAL_BUFFER_SIZE - ((SCPAddr)scp.nextFree - scp.buffer);
-            if (freeSpace >= neededSpace)
-            {
-                /* there is enough space for the queue, create it */
-                id = SCP_getNextFreeId();
-                if (id != SCP_INVALID)
-                {
-                    SCPContainer* const newQueue = scp.nextFree; 
-                    createNewQueue(newQueue, noOfElem, sizeOfElem);
-                    scp.nextFree = (SCPContainer*)END_OF_CONTAINER_DATA(scp.nextFree);
-                    scp.map[id] = newQueue;  
-                }
-            }
-        }
-        SCP_EXIT_CRITICAL_SECTION();
-    }
-    
-    return id;
+{  
+    return SCP_createContainer(noOfElem, sizeOfElem, initNewQueue);
 }
 
 SCPStatus SCPQueue_delete(const SCPContainerId id)
@@ -170,7 +127,7 @@ SCPUWord SCPQueue_getCount(const SCPContainerId id)
     return noOfElem;
 }
 
-static void createNewQueue(SCPContainer* const newQueue, const SCPUWord elem, const SCPUWord size)
+static void initNewQueue(SCPContainer* const newQueue, const SCPUWord elem, const SCPUWord size)
 {
     newQueue->maxNoOfElem = elem;
     newQueue->sizeOfElem = size;
