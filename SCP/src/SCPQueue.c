@@ -3,14 +3,10 @@
 #include "SCPInternal.h"
 #include "SCPQueue.h"
 
-
-#define IS_ADDR_IN_QUEUE_RANGE(addr, queue) (((SCPAddr)(addr) >= START_OF_CONTAINER_DATA(queue)) && \
-                                                ((SCPAddr)(addr) < END_OF_CONTAINER_DATA(queue)))
-
 #define IS_QUEUE_VALID(queue)       (IS_ADDR_IN_BUFFER_RANGE(queue) && \
                                     ((queue)->type == SCPContainerType_queue) && \
-                                    IS_ADDR_IN_QUEUE_RANGE((queue)->c.q.head, (queue)) && \
-                                    IS_ADDR_IN_QUEUE_RANGE((queue)->c.q.tail, (queue)) && \
+                                    IS_ADDR_IN_CONTAINER_RANGE((queue)->c.q.head, (queue)) && \
+                                    IS_ADDR_IN_CONTAINER_RANGE((queue)->c.q.tail, (queue)) && \
                                     ((queue)->maxNoOfElem > 0) && \
                                     ((queue)->sizeOfElem > 0))
 

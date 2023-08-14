@@ -79,6 +79,9 @@ extern SCPInternalType scp;
 
 #define END_OF_CONTAINER_DATA(cntr)                 (SCPAddr)((SCPAddr)(cntr) + sizeof(SCPContainer) + CONTAINER_DATA_SIZE(cntr))
 
+#define IS_ADDR_IN_CONTAINER_RANGE(addr, cntr) (((SCPAddr)(addr) >= START_OF_CONTAINER_DATA(cntr)) && \
+                                                ((SCPAddr)(addr) < END_OF_CONTAINER_DATA(cntr)))
+
 typedef void (*SCPInitContainerFn)(SCPContainer* const container, const SCPUShort elem, const SCPUShort size);
 
 SCPContainerId SCP_getNextFreeId(void);

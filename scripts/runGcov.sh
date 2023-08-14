@@ -7,4 +7,4 @@ SCP_ROOT_DIR=$(dirname "$SCRIPT")/..
 
 export PATH=$PATH:/home/sasha/.local/bin
 cd $SCP_ROOT_DIR/build
-gcovr -r ./.. --html-details -o cov.html --html-self-contained
+gcovr -r ./.. --html-details -o cov.html # --html-self-contained

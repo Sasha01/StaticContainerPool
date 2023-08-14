@@ -140,7 +140,7 @@ static void SCPTests_testQueuePushPop(void)
     const uint16_t q1val1 = 0x1234, q1val2 = 0x5678, q1val3 = 0x9021, q1val4 = 0x1010;
     uint16_t q1out;
     
-    /* create 2 queues*/
+    /* create queue*/
     q1 = SCPQueue_create(3, 2);
     assert (q1 != SCP_INVALID);
 
