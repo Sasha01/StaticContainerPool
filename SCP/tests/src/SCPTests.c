@@ -84,6 +84,27 @@ static void SCPTests_testQueueCreate(void)
     ids[4] = SCPQueue_create(10, 1);
     assert(ids[4] != SCP_INVALID);
 
+    /* Delete the same queue again and try to create it with a larger size. It should fail. */
+    status = SCPQueue_delete(ids[4]);
+    assert(status == SCPStatus_success);
+    ids[4] = SCPQueue_create(11, 1);
+    assert(ids[4] == SCP_INVALID);
+
+    /* At this point there is a gap of 32 + 10 bytes in the middle of the buffer. */
+    /* Now try to create a smaller queue. It should fail as well, because the condition 
+    to create a smaller queue over a deleted one is that we should be able to create another 
+    empty queue with at least one byte in the remaining space. Now there are 2 reasons why this
+    can't be done at this point:
+    1. We already created the maximum allowed number of containers and deleted one, so we can only create 
+    one more.
+    2. There are only 42 bytes available where the deleted queue was, and the container metadata itself is 32 bytes, so in order
+    to create 2 queues we need at least 32 * 2 + 2 = 66 bytes (for containers with 1 byte of data, which is 
+    the smallest possible).
+    For this test only the first reason is valid. If we had more space in the container map, the queue would 
+    be created after the existing queues, not in the empty space.
+    */
+    ids[4] = SCPQueue_create(1, 1);
+    assert(ids[4] == SCP_INVALID);
     /* clean-up */
     SCP_init();
 
@@ -104,6 +125,13 @@ static void SCPTests_testQueueDelete(void)
     /* try to delete a NULL queue */
     status = SCPQueue_delete(SCP_INVALID);
     assert(status == SCPStatus_failed);
+    /* try to delete a queue with a random id. it should fail */
+    status = SCPQueue_delete(5);
+    assert(status == SCPStatus_failed);
+    /* try to delete a queue with the id greater than the size of the map. it should fail */
+    status = SCPQueue_delete(12345);
+    assert(status == SCPStatus_failed);
+
 
     /* create 2 queues, and try to delete the first one. It should succeed. */
     q1 = SCPQueue_create(1, 5);
@@ -130,7 +158,9 @@ static void SCPTests_testQueueDelete(void)
     /* Assuming the size of the buffer is 1000 bytes, this next queue creation is expected to fail due to lack of space. */
     q4 = SCPQueue_create(10,10);
     assert(q4 == SCP_INVALID);
-
+    
+    /* clean-up */
+    SCP_init();
 }
 
 static void SCPTests_testQueuePushPop(void)

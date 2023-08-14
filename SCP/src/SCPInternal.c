@@ -11,7 +11,6 @@ static SCPContainerId getFreeContainterId(const SCPUWord neededSize)
     */
     SCPContainerId id = SCP_INVALID;
     SCPContainerId it;  /* iterator */
-    SCPUWord minimumAcceptableSize = SCP_INVALID;
 
     for (it = 0; it < SCP_MAX_NO_OF_CONTAINERS; it++)
     {
@@ -20,12 +19,27 @@ static SCPContainerId getFreeContainterId(const SCPUWord neededSize)
             /* reached the end of the created containers. Stop. No container found... */
             break;
         }
-        else if ((scp.map[it]->type == SCPContainerType_free) && (CONTAINER_DATA_SIZE(scp.map[it]) >= neededSize))
+        else if (scp.map[it]->type == SCPContainerType_free)
         {
-            if (minimumAcceptableSize > CONTAINER_DATA_SIZE(scp.map[it]))
+            if (CONTAINER_DATA_SIZE(scp.map[it]) == neededSize)
+            {
+                /* just return the id */
+                id = it;
+                break;
+            }
+
+            /* If the empty container is not the exact same size as the needed container, we need to be able to 
+            create one more container in the remaining space. So the size of the currently empty container needs
+            to fit the new container and another one with at least 1 byte of data. */
+            else if (CONTAINER_DATA_SIZE(scp.map[it]) >= (neededSize + sizeof(SCPContainer) + 1))
             {
                 id = it;
-                minimumAcceptableSize = CONTAINER_DATA_SIZE(scp.map[it]);
+                break;
+                /* TODO: implement the creation of the new empty container */
+            }
+            else
+            {
+                /* do nothing, we can't create the container here. */
             }
         }
         else
@@ -126,6 +140,7 @@ SCPContainerId SCP_createContainer(const SCPUShort noOfElem, const SCPUShort siz
             Idea 2: each call to the defragment function will move ONE empty container. If one container was moved, it will return IN_PROGRESS,
             if no empty conainer was found return SUCCESS.
             */
+
         }
         else
         {
