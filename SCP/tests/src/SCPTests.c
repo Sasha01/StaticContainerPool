@@ -105,9 +105,48 @@ static void SCPTests_testQueueCreate(void)
     */
     ids[4] = SCPQueue_create(1, 1);
     assert(ids[4] == SCP_INVALID);
+    
     /* clean-up */
     SCP_init();
 
+    /* Create 3 queues of 300 bytes each. 
+    This should occupy 300 * 3 + 32 * 3 = 996 bytes of the 1000 bytes allocated to the buffer.
+    */
+    ids[0] = SCPQueue_create(300, 1);
+    assert(ids[0] != SCP_INVALID);
+    ids[1] = SCPQueue_create(300, 1);
+    assert(ids[1] != SCP_INVALID);
+    ids[2] = SCPQueue_create(300, 1);
+    assert(ids[2] != SCP_INVALID);
+
+    /* Delete the middle queue. This should free up 332 bytes*/
+    status = SCPQueue_delete(ids[1]);
+    assert(status == SCPStatus_success);
+
+    /* Create 2 queues of 100 bytes each. This should take 100 * 2 + 32 * 2 = 264 bytes so they should be 
+    created in the space freed up by the previous deletion. 
+    There will be a leftover free container of 332 - 264 - 32 = 36 bytes*/
+    ids[4] = SCPQueue_create(100, 1);
+    assert(ids[4] != SCP_INVALID);
+    ids[5] = SCPQueue_create(100, 1);
+    assert(ids[5] != SCP_INVALID);
+
+    /* Try to create one more container of 37 bytes. This should fail, there is no more space. */
+    ids[6] = SCPQueue_create(37, 1);
+    assert(ids[6] == SCP_INVALID);
+
+    /* Try to create one more container of 5 bytes. This should fail, there is no more space to 
+    create another empty container. */
+    ids[6] = SCPQueue_create(5, 1);
+    assert(ids[6] == SCP_INVALID);
+
+    /* Try to create one more container of 36 bytes. This should succeed as it fits exactly over 
+    the free container. */
+    ids[6] = SCPQueue_create(36, 1);
+    assert(ids[6] != SCP_INVALID);
+
+    /* clean-up */
+    SCP_init();
 }
 
 static void SCPTests_testQueueDelete(void)

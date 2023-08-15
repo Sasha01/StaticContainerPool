@@ -33,9 +33,33 @@ static SCPContainerId getFreeContainterId(const SCPUWord neededSize)
             to fit the new container and another one with at least 1 byte of data. */
             else if (CONTAINER_DATA_SIZE(scp.map[it]) >= (neededSize + sizeof(SCPContainer) + 1))
             {
-                id = it;
-                break;
-                /* TODO: implement the creation of the new empty container */
+                /* The new container will be created after this function returns, but the remaining 
+                space needs to be set up with a new container now. */
+
+                /* Find a place at the end of the map to place the id. */
+                SCPContainerId it2;
+                for (it2 = it; it2 < SCP_MAX_NO_OF_CONTAINERS; it2++)
+                {
+                    if (scp.map[it2] == SCP_NULL)
+                    {
+                        SCPContainer* newFreeContainer = (SCPContainer*)((SCPAddr)scp.map[it] + sizeof(SCPContainer) + neededSize);
+                        newFreeContainer->type = SCPContainerType_free;
+                        newFreeContainer->maxNoOfElem = 1;
+                        newFreeContainer->sizeOfElem = CONTAINER_DATA_SIZE(scp.map[it]) - sizeof(SCPContainer) - neededSize;
+                        scp.map[it2] = newFreeContainer;
+                        /* TODO: if the next container if a free container, join them. */
+
+                        /* The free container was created successfully, so now we can return the id back to the caller
+                        so it can create the needed container. */
+                        id = it;
+                        break;
+                    }
+                }
+                /* Check if we can break from the outer loop.*/
+                if (id != SCP_INVALID)
+                {
+                    break;
+                }
             }
             else
             {
