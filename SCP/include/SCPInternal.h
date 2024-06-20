@@ -82,6 +82,13 @@ extern SCPInternalType scp;
 #define IS_ADDR_IN_CONTAINER_RANGE(addr, cntr) (((SCPAddr)(addr) >= START_OF_CONTAINER_DATA(cntr)) && \
                                                 ((SCPAddr)(addr) < END_OF_CONTAINER_DATA(cntr)))
 
+#if SCP_ENABLE_PRINT_LOG
+#include <stdio.h>
+#define SCP_LOG(...) printf(__VA_ARGS__)
+#else
+#define SCP_LOG(message)
+#endif 
+
 typedef void (*SCPInitContainerFn)(SCPContainer* const container, const SCPUShort elem, const SCPUShort size);
 
 SCPContainerId SCP_getNextFreeId(void);

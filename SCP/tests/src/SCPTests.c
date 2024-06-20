@@ -197,7 +197,20 @@ static void SCPTests_testQueueDelete(void)
     /* Assuming the size of the buffer is 1000 bytes, this next queue creation is expected to fail due to lack of space. */
     q4 = SCPQueue_create(10,10);
     assert(q4 == SCP_INVALID);
-    
+    status = SCPQueue_delete(q1);
+    assert(status == SCPStatus_success);
+    q1 = SCP_INVALID;
+    q1 = SCPQueue_create(3,2);
+    assert(q1 != SCP_INVALID);
+    /* Now delete q1 and q2 and try to create a queue that takes more than q1. */
+    status = SCPQueue_delete(q2);
+    assert(status == SCPStatus_success);
+    status = SCPQueue_delete(q1);
+    assert(status == SCPStatus_success);
+    /* We just freed up 2 * (32 + 3 * 2) = 76 bytes, so we should be able to create a queue with 76 - 32 = 44 bytes of data */
+
+    q1 = SCPQueue_create(11,4);
+    assert(q1 != SCP_INVALID);
     /* clean-up */
     SCP_init();
 }
