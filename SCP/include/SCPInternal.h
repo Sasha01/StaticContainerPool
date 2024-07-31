@@ -86,7 +86,7 @@ extern SCPInternalType scp;
 #include <stdio.h>
 #define SCP_LOG(...) printf(__VA_ARGS__)
 #else
-#define SCP_LOG(message)
+#define SCP_LOG(...)
 #endif 
 
 typedef void (*SCPInitContainerFn)(SCPContainer* const container, const SCPUShort elem, const SCPUShort size);

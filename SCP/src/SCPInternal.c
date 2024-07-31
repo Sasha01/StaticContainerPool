@@ -17,6 +17,11 @@ static void mergeNextFreeContainers(SCPContainer* const cntr)
     {
         SCPContainerId it;
         cntr->maxNoOfElem += (nextCntr->maxNoOfElem + sizeof(SCPContainer));
+        /*
+        Delete the id from the map.
+        We no longer need it because we already have the id of the first free container.
+        This next container will no longer exist.
+        */
         for (it = 0; it < SCP_MAX_NO_OF_CONTAINERS; it++)
         {
             if (scp.map[it] == nextCntr)
