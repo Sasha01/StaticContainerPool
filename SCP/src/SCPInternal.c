@@ -150,11 +150,11 @@ void SCP_freeContainter(const SCPContainerId id)
 
         memset(&cntr->c, 0x00, sizeof(cntr->c));
 
-        /* check if it's the last queue created. */
+        /* check if it's the last container created. */
         if (END_OF_CONTAINER_DATA(cntr) == (SCPAddr)scp.nextFree)
         {
             /*
-            If it is the last queue that was created, move the nextFree pointer back
+            If it is the last container that was created, move the nextFree pointer back
             and set the id in the map to NULL;
              */
             scp.nextFree = cntr;

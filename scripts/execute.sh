@@ -1,3 +1,4 @@
+#!/bin/bash
 cd ..
 ./build/StaticContainerPool.exe
 cd scripts
