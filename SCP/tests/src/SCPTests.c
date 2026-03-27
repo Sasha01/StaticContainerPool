@@ -10,15 +10,21 @@ static void SCPTests_testQueuePushPop(void);
 static void SCPTests_testQueueIsEmpty(void);
 static void SCPTests_testQueueIsFull(void);
 static void SCPTests_testQueueVarious(void);
-
-
 static void SCPTests_testQueueDelete(void);
+
+static void SCPTests_testDefrag(void);
+static void SCPTests_testDefragNoGaps(void);
+static void SCPTests_testDefragSingleGapLastContainer(void);
+static void SCPTests_testDefragSingleGapMiddle(void);
+static void SCPTests_testDefragDataIntegrity(void);
+static void SCPTests_testDefragMultipleGaps(void);
 
 void SCPTests_run(void)
 {
-    #if SCP_ENABLE_API_QUEUE 
+    #if SCP_ENABLE_API_QUEUE
     SCPTests_testQueue();
     #endif  /* SCP_ENABLE_API_QUEUE */
+    SCPTests_testDefrag();
     printf("Running SCP tests! Success!\n");
 }
 
@@ -109,8 +115,8 @@ static void SCPTests_testQueueCreate(void)
     /* clean-up */
     SCP_init();
 
-    /* Create 3 queues of 300 bytes each. 
-    This should occupy 300 * 3 + 32 * 3 = 996 bytes of the 1000 bytes allocated to the buffer.
+    /* Create 3 queues of 300 bytes each.
+    This should occupy 300 * 3 + 24 * 3 = 972 bytes of the 1000 bytes allocated to the buffer.
     */
     ids[0] = SCPQueue_create(300, 1);
     assert(ids[0] != SCP_INVALID);
@@ -119,30 +125,33 @@ static void SCPTests_testQueueCreate(void)
     ids[2] = SCPQueue_create(300, 1);
     assert(ids[2] != SCP_INVALID);
 
-    /* Delete the middle queue. This should free up 332 bytes*/
+    /* Delete the middle queue. This should free up 324 bytes (24 header + 300 data). */
     status = SCPQueue_delete(ids[1]);
     assert(status == SCPStatus_success);
 
-    /* Create 2 queues of 100 bytes each. This should take 100 * 2 + 32 * 2 = 264 bytes so they should be 
-    created in the space freed up by the previous deletion. 
-    There will be a leftover free container of 332 - 264 - 32 = 36 bytes*/
+    /* Create 2 queues of 100 bytes each. This should take 100 * 2 + 24 * 2 = 248 bytes so they should be
+    created in the space freed up by the previous deletion.
+    There will be a leftover free container of 324 - 248 - 24 = 52 bytes of data. */
     ids[4] = SCPQueue_create(100, 1);
     assert(ids[4] != SCP_INVALID);
     ids[5] = SCPQueue_create(100, 1);
     assert(ids[5] != SCP_INVALID);
 
-    /* Try to create one more container of 37 bytes. This should fail, there is no more space. */
+    /* Try to create one more container of 37 bytes. This should fail: the free container has 52
+    bytes but 52 < 37 + 24 + 1 = 62 so it cannot be split, and there are only 28 bytes left at
+    the end of the buffer so it cannot be appended there either. */
     ids[6] = SCPQueue_create(37, 1);
     assert(ids[6] == SCP_INVALID);
 
-    /* Try to create one more container of 5 bytes. This should fail, there is no more space to 
-    create another empty container. */
-    ids[6] = SCPQueue_create(5, 1);
+    /* Try to create one more container of 28 bytes. This should also fail: splitting the 52-byte
+    free container would require 28 + 24 + 1 = 53 bytes, which exceeds the 52 bytes available,
+    and 24 + 28 = 52 bytes exceeds the 28 bytes free at the end of the buffer. */
+    ids[6] = SCPQueue_create(28, 1);
     assert(ids[6] == SCP_INVALID);
 
-    /* Try to create one more container of 36 bytes. This should succeed as it fits exactly over 
+    /* Try to create one more container of 52 bytes. This should succeed as it fits exactly over
     the free container. */
-    ids[6] = SCPQueue_create(36, 1);
+    ids[6] = SCPQueue_create(52, 1);
     assert(ids[6] != SCP_INVALID);
 
     /* clean-up */
@@ -461,4 +470,185 @@ static void SCPTests_testQueueVarious(void)
     /* clean-up */
     status = SCPQueue_delete(q1);
     assert(status == SCPStatus_success);
+}
+
+static void SCPTests_testDefrag(void)
+{
+    SCP_init();
+    SCPTests_testDefragNoGaps();
+    SCPTests_testDefragSingleGapLastContainer();
+    SCPTests_testDefragSingleGapMiddle();
+    SCPTests_testDefragDataIntegrity();
+    SCPTests_testDefragMultipleGaps();
+    printf("Testing defrag. Success!!!\n");
+}
+
+static void SCPTests_testDefragNoGaps(void)
+{
+    /* No gaps in the buffer: defrag should report success immediately. */
+    SCPContainerId q1 = SCPQueue_create(10, 4);
+    SCPContainerId q2 = SCPQueue_create(10, 4);
+    assert(q1 != SCP_INVALID);
+    assert(q2 != SCP_INVALID);
+
+    assert(SCP_defrag() == SCPStatus_success);
+
+    /* clean-up */
+    SCP_init();
+}
+
+static void SCPTests_testDefragSingleGapLastContainer(void)
+{
+    /*
+     * Layout: [Q1][Q2]
+     * Delete Q1 → gap at the start, Q2 is the only container after it.
+     * One defrag step should move Q2 forward and reclaim the trailing space.
+     */
+    SCPContainerId q1 = SCPQueue_create(5, 1);
+    SCPContainerId q2 = SCPQueue_create(10, 2);
+    assert(q1 != SCP_INVALID);
+    assert(q2 != SCP_INVALID);
+
+    SCPStatus status = SCPQueue_delete(q1);
+    assert(status == SCPStatus_success);
+
+    /* One step needed: Q2 moves into Q1's old slot. */
+    assert(SCP_defrag() == SCPStatus_inProgress);
+
+    /* No more gaps. */
+    assert(SCP_defrag() == SCPStatus_success);
+
+    /* Q2 must still be usable after the move. */
+    assert(SCPQueue_isEmpty(q2) == SCPBool_true);
+    const uint16_t val = 0xABCD;
+    assert(SCPQueue_push(q2, (SCPAddr)&val) == SCPStatus_success);
+    assert(SCPQueue_isFull(q2) == SCPBool_false);
+
+    /* The space freed at the end should allow a new container to be created. */
+    SCPContainerId q3 = SCPQueue_create(5, 1);
+    assert(q3 != SCP_INVALID);
+
+    /* clean-up */
+    SCP_init();
+}
+
+static void SCPTests_testDefragSingleGapMiddle(void)
+{
+    /*
+     * Layout: [Q1][Q2][Q3]
+     * Delete Q2 → gap in the middle.
+     * One defrag step moves Q3 into Q2's slot.
+     */
+    SCPContainerId q1 = SCPQueue_create(5, 2);
+    SCPContainerId q2 = SCPQueue_create(5, 2);
+    SCPContainerId q3 = SCPQueue_create(5, 2);
+    assert(q1 != SCP_INVALID);
+    assert(q2 != SCP_INVALID);
+    assert(q3 != SCP_INVALID);
+
+    SCPStatus status = SCPQueue_delete(q2);
+    assert(status == SCPStatus_success);
+
+    assert(SCP_defrag() == SCPStatus_inProgress);
+    assert(SCP_defrag() == SCPStatus_success);
+
+    /* Q1 and Q3 must still be usable. */
+    const uint16_t val = 0x1234;
+    assert(SCPQueue_push(q1, (SCPAddr)&val) == SCPStatus_success);
+    assert(SCPQueue_push(q3, (SCPAddr)&val) == SCPStatus_success);
+
+    uint16_t out = 0;
+    assert(SCPQueue_pop(q1, (SCPAddr)&out) == SCPStatus_success);
+    assert(out == val);
+    assert(SCPQueue_pop(q3, (SCPAddr)&out) == SCPStatus_success);
+    assert(out == val);
+
+    /* clean-up */
+    SCP_init();
+}
+
+static void SCPTests_testDefragDataIntegrity(void)
+{
+    /*
+     * Push data into a queue, then create a gap before it and defrag.
+     * The FIFO order and values must be preserved after the container moves.
+     */
+    const uint16_t v1 = 0x0001, v2 = 0x0002, v3 = 0x0003;
+    uint16_t out = 0;
+
+    SCPContainerId gap = SCPQueue_create(8, 1);   /* will be deleted to create a gap */
+    SCPContainerId q   = SCPQueue_create(3, sizeof(uint16_t));
+    assert(gap != SCP_INVALID);
+    assert(q   != SCP_INVALID);
+
+    /* Fill the queue before defragging. */
+    assert(SCPQueue_push(q, (SCPAddr)&v1) == SCPStatus_success);
+    assert(SCPQueue_push(q, (SCPAddr)&v2) == SCPStatus_success);
+    assert(SCPQueue_push(q, (SCPAddr)&v3) == SCPStatus_success);
+    assert(SCPQueue_isFull(q) == SCPBool_true);
+
+    /* Pop one element and push another to exercise the ring-buffer wrap-around,
+       then defrag while head != tail. */
+    assert(SCPQueue_pop(q, (SCPAddr)&out) == SCPStatus_success);
+    assert(out == v1);
+    assert(SCPQueue_push(q, (SCPAddr)&v1) == SCPStatus_success);  /* wraps head */
+
+    /* Create the gap and defrag. */
+    assert(SCPQueue_delete(gap) == SCPStatus_success);
+    assert(SCP_defrag() == SCPStatus_inProgress);
+    assert(SCP_defrag() == SCPStatus_success);
+
+    /* Pop remaining elements; order must be v2, v3, v1. */
+    assert(SCPQueue_pop(q, (SCPAddr)&out) == SCPStatus_success);
+    assert(out == v2);
+    assert(SCPQueue_pop(q, (SCPAddr)&out) == SCPStatus_success);
+    assert(out == v3);
+    assert(SCPQueue_pop(q, (SCPAddr)&out) == SCPStatus_success);
+    assert(out == v1);
+    assert(SCPQueue_isEmpty(q) == SCPBool_true);
+
+    /* clean-up */
+    SCP_init();
+}
+
+static void SCPTests_testDefragMultipleGaps(void)
+{
+    /*
+     * Layout: [Q1][Q2][Q3][Q4]
+     * Delete Q1 and Q3 → two gaps.
+     * Defrag must be called until success; Q2 and Q4 must survive intact.
+     */
+    const uint16_t v2 = 0xBEEF, v4 = 0xCAFE;
+    uint16_t out = 0;
+
+    SCPContainerId q1 = SCPQueue_create(4, 1);
+    SCPContainerId q2 = SCPQueue_create(3, sizeof(uint16_t));
+    SCPContainerId q3 = SCPQueue_create(4, 1);
+    SCPContainerId q4 = SCPQueue_create(3, sizeof(uint16_t));
+    assert(q1 != SCP_INVALID);
+    assert(q2 != SCP_INVALID);
+    assert(q3 != SCP_INVALID);
+    assert(q4 != SCP_INVALID);
+
+    assert(SCPQueue_push(q2, (SCPAddr)&v2) == SCPStatus_success);
+    assert(SCPQueue_push(q4, (SCPAddr)&v4) == SCPStatus_success);
+
+    assert(SCPQueue_delete(q1) == SCPStatus_success);
+    assert(SCPQueue_delete(q3) == SCPStatus_success);
+
+    /* Run defrag until fully compacted. */
+    SCPStatus defragStatus;
+    do {
+        defragStatus = SCP_defrag();
+        assert(defragStatus != SCPStatus_failed);
+    } while (defragStatus == SCPStatus_inProgress);
+
+    /* Q2 and Q4 data must still be correct. */
+    assert(SCPQueue_pop(q2, (SCPAddr)&out) == SCPStatus_success);
+    assert(out == v2);
+    assert(SCPQueue_pop(q4, (SCPAddr)&out) == SCPStatus_success);
+    assert(out == v4);
+
+    /* clean-up */
+    SCP_init();
 }

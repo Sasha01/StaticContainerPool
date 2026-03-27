@@ -186,6 +186,114 @@ void SCP_freeContainter(const SCPContainerId id)
     }
 }
 
+static SCPContainer* findFirstFreeContainer(void)
+{
+    SCPContainer* cntr = (SCPContainer*)scp.buffer;
+    while (((SCPAddr)cntr < (SCPAddr)scp.nextFree) && (cntr->type != SCPContainerType_free))
+    {
+        cntr = (SCPContainer*)END_OF_CONTAINER_DATA(cntr);
+    }
+    return ((SCPAddr)cntr < (SCPAddr)scp.nextFree) ? cntr : SCP_NULL;
+}
+
+static SCPContainerId findContainerIdByAddr(const SCPContainer* const cntr)
+{
+    SCPContainerId it;
+    for (it = 0; it < SCP_MAX_NO_OF_CONTAINERS; it++)
+    {
+        if (scp.map[it] == cntr)
+        {
+            return it;
+        }
+    }
+    return SCP_INVALID;
+}
+
+static void placeNewFreeGap(SCPContainer* const newFreeCntr, const SCPUWord freeDataSize, const SCPContainerId freeId)
+{
+    const SCPAddr endOfNewFree = (SCPAddr)newFreeCntr + sizeof(SCPContainer) + freeDataSize;
+    if (endOfNewFree >= (SCPAddr)scp.nextFree)
+    {
+        /* The moved container was the last one; reclaim the trailing space. */
+        scp.nextFree = (SCPContainer*)newFreeCntr;
+        if (freeId != SCP_INVALID)
+        {
+            scp.map[freeId] = SCP_NULL;
+        }
+    }
+    else
+    {
+        /* Place a free container in the gap and merge with any adjacent free containers. */
+        newFreeCntr->type = SCPContainerType_free;
+        newFreeCntr->maxNoOfElem = freeDataSize;
+        newFreeCntr->sizeOfElem = 1;
+        newFreeCntr->noOfElem = 0;
+        newFreeCntr->blocked = SCPBool_false;
+        if (freeId != SCP_INVALID)
+        {
+            scp.map[freeId] = newFreeCntr;
+        }
+        mergeNextFreeContainers(newFreeCntr);
+    }
+}
+
+static void moveLiveContainer(SCPContainer* const freeCntr, SCPContainer* const liveCntr)
+{
+    const SCPUWord liveTotalSize = sizeof(SCPContainer) + CONTAINER_DATA_SIZE(liveCntr);
+    const SCPUWord freeDataSize = CONTAINER_DATA_SIZE(freeCntr);
+    const SCPContainerId freeId = findContainerIdByAddr(freeCntr);
+
+    /*
+     * Because internal pointers (head, tail, top) are stored as offsets from the
+     * start of the container's own data region, they remain valid after the move
+     * with no adjustment needed.
+     */
+    memmove(freeCntr, liveCntr, liveTotalSize);
+
+    /* Update the map so the live container's ID points to its new location. */
+    const SCPContainerId liveId = findContainerIdByAddr(liveCntr);
+    if (liveId != SCP_INVALID)
+    {
+        scp.map[liveId] = freeCntr;
+    }
+
+    SCP_LOG("Defrag: moved container of %d bytes from offset %d to offset %d\n",
+        (int)freeDataSize,
+        (int)((SCPAddr)liveCntr - scp.buffer),
+        (int)((SCPAddr)freeCntr - scp.buffer));
+
+    SCPContainer* const newFreeCntr = (SCPContainer*)((SCPAddr)freeCntr + liveTotalSize);
+    placeNewFreeGap(newFreeCntr, freeDataSize, freeId);
+}
+
+SCPStatus SCP_defrag(void)
+{
+    SCPStatus status = SCPStatus_failed;
+
+    SCP_ENTER_CRITICAL_SECTION();
+
+    SCPContainer* const freeCntr = findFirstFreeContainer();
+    if (freeCntr == SCP_NULL)
+    {
+        status = SCPStatus_success;
+    }
+    else
+    {
+        SCPContainer* const liveCntr = (SCPContainer*)END_OF_CONTAINER_DATA(freeCntr);
+
+        /* Invariant: a free container is never at the end of the buffer. */
+        assert((SCPAddr)liveCntr < (SCPAddr)scp.nextFree);
+        assert(liveCntr->type != SCPContainerType_free);
+
+        moveLiveContainer(freeCntr, liveCntr);
+        status = SCPStatus_inProgress;
+    }
+
+    SCP_EXIT_CRITICAL_SECTION();
+
+    return status;
+}
+
 SCPContainerId SCP_createContainer(const SCPUShort noOfElem, const SCPUShort sizeOfElem, const SCPInitContainerFn initFn)
 {
     SCPContainerId id = SCP_INVALID;

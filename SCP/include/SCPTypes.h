@@ -39,7 +39,8 @@ typedef enum {
  */
 typedef enum {
     SCPStatus_failed,
-    SCPStatus_success
+    SCPStatus_success,
+    SCPStatus_inProgress
 }SCPStatus;
 
 

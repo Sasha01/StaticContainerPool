@@ -5,8 +5,8 @@
 
 #define IS_QUEUE_VALID(queue)       (IS_ADDR_IN_BUFFER_RANGE(queue) && \
                                     ((queue)->type == SCPContainerType_queue) && \
-                                    IS_ADDR_IN_CONTAINER_RANGE((queue)->c.q.head, (queue)) && \
-                                    IS_ADDR_IN_CONTAINER_RANGE((queue)->c.q.tail, (queue)) && \
+                                    ((queue)->c.q.head < CONTAINER_DATA_SIZE(queue)) && \
+                                    ((queue)->c.q.tail < CONTAINER_DATA_SIZE(queue)) && \
                                     ((queue)->maxNoOfElem > 0) && \
                                     ((queue)->sizeOfElem > 0))
 
@@ -36,12 +36,12 @@ SCPStatus SCPQueue_push(const SCPContainerId id, SCPAddr const data)
     SCPContainer* const container = SCP_getContainer(id);
     if (IS_QUEUE_VALID(container) && (data != SCP_NULL) && (container->noOfElem < container->maxNoOfElem))
     {
-        memcpy(container->c.q.head, data, container->sizeOfElem);
-        // advance the head
+        SCPAddr const dataStart = START_OF_CONTAINER_DATA(container);
+        memcpy(dataStart + container->c.q.head, data, container->sizeOfElem);
         container->c.q.head += container->sizeOfElem;
-        if (container->c.q.head >= END_OF_CONTAINER_DATA(container))
+        if (container->c.q.head >= CONTAINER_DATA_SIZE(container))
         {
-            container->c.q.head = START_OF_CONTAINER_DATA(container);
+            container->c.q.head = 0;
         }
         container->noOfElem++;
         status = SCPStatus_success;
@@ -55,12 +55,12 @@ SCPStatus SCPQueue_pop(const SCPContainerId id, SCPAddr data)
     SCPContainer* const container = SCP_getContainer(id);
     if (IS_QUEUE_VALID(container) && (data != SCP_NULL) && (container->noOfElem > 0))
     {
-        memcpy(data, container->c.q.tail, container->sizeOfElem);
-        // advance the tail
+        SCPAddr const dataStart = START_OF_CONTAINER_DATA(container);
+        memcpy(data, dataStart + container->c.q.tail, container->sizeOfElem);
         container->c.q.tail += container->sizeOfElem;
-        if (container->c.q.tail >= END_OF_CONTAINER_DATA(container))
+        if (container->c.q.tail >= CONTAINER_DATA_SIZE(container))
         {
-            container->c.q.tail = START_OF_CONTAINER_DATA(container);
+            container->c.q.tail = 0;
         }
         container->noOfElem--;
         status = SCPStatus_success;
@@ -106,7 +106,7 @@ static void initNewQueue(SCPContainer* const newQueue, const SCPUShort elem, con
     newQueue->maxNoOfElem = elem;
     newQueue->sizeOfElem = size;
     newQueue->noOfElem = 0;
-    newQueue->c.q.head = (SCPAddr)newQueue + sizeof(SCPContainer);
-    newQueue->c.q.tail = newQueue->c.q.head;
+    newQueue->c.q.head = 0;
+    newQueue->c.q.tail = 0;
     newQueue->type = SCPContainerType_queue;
 }

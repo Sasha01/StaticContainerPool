@@ -10,8 +10,8 @@
  * 
  */
 typedef struct  {
-    SCPAddr tail;           /**< Pointer to the tail of the queue.*/
-    SCPAddr head;           /**< Pointer to the head of the queue.*/
+    SCPUWord tail;          /**< Offset of the tail from the start of the container data.*/
+    SCPUWord head;          /**< Offset of the head from the start of the container data.*/
 }SCPQueue;
 #endif  /* SCP_ENABLE_API_QUEUE */
 
@@ -21,7 +21,7 @@ typedef struct  {
  * 
  */
 typedef struct  {
-    SCPAddr top;            /**< Pointer to the top of the stack.*/
+    SCPUWord top;           /**< Offset of the top from the start of the container data.*/
 }SCPStack;
 #endif /* SCP_ENABLE_API_STACK */
 
