@@ -18,6 +18,7 @@ static void SCPTests_testDefragSingleGapLastContainer(void);
 static void SCPTests_testDefragSingleGapMiddle(void);
 static void SCPTests_testDefragDataIntegrity(void);
 static void SCPTests_testDefragMultipleGaps(void);
+static void SCPTests_testDefragAdjacentFreesMergePrev(void);
 
 void SCPTests_run(void)
 {
@@ -480,6 +481,7 @@ static void SCPTests_testDefrag(void)
     SCPTests_testDefragSingleGapMiddle();
     SCPTests_testDefragDataIntegrity();
     SCPTests_testDefragMultipleGaps();
+    SCPTests_testDefragAdjacentFreesMergePrev();
     printf("Testing defrag. Success!!!\n");
 }
 
@@ -648,6 +650,51 @@ static void SCPTests_testDefragMultipleGaps(void)
     assert(out == v2);
     assert(SCPQueue_pop(q4, (SCPAddr)&out) == SCPStatus_success);
     assert(out == v4);
+
+    /* clean-up */
+    SCP_init();
+}
+
+static void SCPTests_testDefragAdjacentFreesMergePrev(void)
+{
+    /*
+     * Regression test for Bug 1: two adjacent free containers in buffer order.
+     *
+     * Layout: [Q_A][Q_B][Q_C]
+     * Delete Q_A → free gap at start.
+     * Delete Q_B → Q_B is immediately after Q_A's free space.
+     *   mergePrevFreeContainer must absorb Q_B into Q_A's free block so that
+     *   only one free container exists in the map.
+     * Without the fix, defrag asserts because it finds a free container
+     * immediately after another free container.
+     */
+    const uint16_t val = 0x5A5A;
+    uint16_t out = 0;
+
+    SCPContainerId q_a = SCPQueue_create(4, sizeof(uint16_t));
+    SCPContainerId q_b = SCPQueue_create(4, sizeof(uint16_t));
+    SCPContainerId q_c = SCPQueue_create(4, sizeof(uint16_t));
+    assert(q_a != SCP_INVALID);
+    assert(q_b != SCP_INVALID);
+    assert(q_c != SCP_INVALID);
+
+    assert(SCPQueue_push(q_c, (SCPAddr)&val) == SCPStatus_success);
+
+    /* Free in buffer order: earlier address first, then the one right after. */
+    assert(SCPQueue_delete(q_a) == SCPStatus_success);
+    assert(SCPQueue_delete(q_b) == SCPStatus_success);
+
+    /* Defrag must not crash (assert) and must compact the buffer. */
+    SCPStatus defragStatus;
+    do {
+        defragStatus = SCP_defrag();
+        assert(defragStatus != SCPStatus_failed);
+    } while (defragStatus == SCPStatus_inProgress);
+
+    /* Q_C must still hold its data after being moved. */
+    assert(SCPQueue_pop(q_c, (SCPAddr)&out) == SCPStatus_success);
+    assert(out == val);
+    assert(SCPQueue_isEmpty(q_c) == SCPBool_true);
 
     /* clean-up */
     SCP_init();

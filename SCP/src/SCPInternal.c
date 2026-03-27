@@ -4,6 +4,30 @@
 #include <string.h>
 #include <assert.h>
 
+static void mergePrevFreeContainer(SCPContainer* const cntr, const SCPContainerId id)
+{
+    assert(cntr->type == SCPContainerType_free);
+    assert(cntr->sizeOfElem == 1);
+
+    SCPContainerId it;
+    for (it = 0; it < SCP_MAX_NO_OF_CONTAINERS; it++)
+    {
+        if ((scp.map[it] != SCP_NULL) &&
+            (scp.map[it]->type == SCPContainerType_free) &&
+            ((SCPAddr)scp.map[it] < (SCPAddr)cntr) &&
+            ((SCPAddr)END_OF_CONTAINER_DATA(scp.map[it]) == (SCPAddr)cntr))
+        {
+            scp.map[it]->maxNoOfElem += sizeof(SCPContainer) + CONTAINER_DATA_SIZE(cntr);
+            scp.map[id] = SCP_NULL;
+            SCP_LOG("Merged container of %d bytes at offset %d into previous free container at offset %d\n",
+                (int)CONTAINER_DATA_SIZE(cntr),
+                (int)((SCPAddr)cntr - scp.buffer),
+                (int)((SCPAddr)scp.map[it] - scp.buffer));
+            break;
+        }
+    }
+}
+
 static void mergeNextFreeContainers(SCPContainer* const cntr)
 {
     /*
@@ -78,6 +102,8 @@ static SCPContainerId getFreeContainterId(const SCPUWord neededSize)
                         newFreeContainer->type = SCPContainerType_free;
                         newFreeContainer->maxNoOfElem = CONTAINER_DATA_SIZE(scp.map[it]) - sizeof(SCPContainer) - neededSize;
                         newFreeContainer->sizeOfElem = 1;
+                        newFreeContainer->noOfElem = 0;
+                        newFreeContainer->blocked = SCPBool_false;
                         scp.map[it2] = newFreeContainer;
                         SCP_LOG("New free container of %d bytes created at address %p\n", newFreeContainer->maxNoOfElem, (void*)((SCPAddr)newFreeContainer - (SCPAddr)scp.buffer));
                         /* TODO: if the next container if a free container, join them. */
@@ -180,6 +206,7 @@ void SCP_freeContainter(const SCPContainerId id)
             cntr->blocked = SCPBool_false;
             SCP_LOG("Freed container of %d bytes created at address %p\n", cntr->maxNoOfElem * cntr->sizeOfElem, (void*)((SCPAddr)cntr - (SCPAddr)scp.buffer));
             mergeNextFreeContainers(cntr);
+            mergePrevFreeContainer(cntr, id);
         }
         
         SCP_EXIT_CRITICAL_SECTION();
@@ -252,10 +279,8 @@ static void moveLiveContainer(SCPContainer* const freeCntr, SCPContainer* const 
 
     /* Update the map so the live container's ID points to its new location. */
     const SCPContainerId liveId = findContainerIdByAddr(liveCntr);
-    if (liveId != SCP_INVALID)
-    {
-        scp.map[liveId] = freeCntr;
-    }
+    assert(liveId != SCP_INVALID);
+    scp.map[liveId] = freeCntr;
 
     SCP_LOG("Defrag: moved container of %d bytes from offset %d to offset %d\n",
         (int)freeDataSize,
